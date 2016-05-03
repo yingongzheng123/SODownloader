@@ -44,6 +44,9 @@
         NSURLSession *downloadSession = [[self class]defaultDownloadSession];
         self.downloadSession = downloadSession;
         
+        NSString *name = [NSString stringWithFormat:@"cn.scfhao.downloader-%@", [NSUUID UUID].UUIDString];
+        self.synchronousQueue = dispatch_queue_create([name cStringUsingEncoding:NSASCIIStringEncoding], DISPATCH_QUEUE_SERIAL);
+        
         
     }
     return self;

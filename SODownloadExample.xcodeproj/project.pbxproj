@@ -15,6 +15,7 @@
 		09B85BA21CD8CD1B00FE4D7E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09B85BA01CD8CD1B00FE4D7E /* LaunchScreen.storyboard */; };
 		09B85BAC1CD8CD5F00FE4D7E /* SODownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B85BAB1CD8CD5F00FE4D7E /* SODownloader.m */; };
 		09B85BAF1CD8CD6E00FE4D7E /* SODownloadItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B85BAE1CD8CD6E00FE4D7E /* SODownloadItem.m */; };
+		09B85BB21CD8E85400FE4D7E /* SOMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B85BB11CD8E85400FE4D7E /* SOMusic.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,8 @@
 		09B85BAB1CD8CD5F00FE4D7E /* SODownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SODownloader.m; sourceTree = "<group>"; };
 		09B85BAD1CD8CD6E00FE4D7E /* SODownloadItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SODownloadItem.h; sourceTree = "<group>"; };
 		09B85BAE1CD8CD6E00FE4D7E /* SODownloadItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SODownloadItem.m; sourceTree = "<group>"; };
+		09B85BB01CD8E85400FE4D7E /* SOMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOMusic.h; sourceTree = "<group>"; };
+		09B85BB11CD8E85400FE4D7E /* SOMusic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOMusic.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +77,8 @@
 				09B85BA01CD8CD1B00FE4D7E /* LaunchScreen.storyboard */,
 				09B85BA31CD8CD1B00FE4D7E /* Info.plist */,
 				09B85B921CD8CD1B00FE4D7E /* Supporting Files */,
+				09B85BB01CD8E85400FE4D7E /* SOMusic.h */,
+				09B85BB11CD8E85400FE4D7E /* SOMusic.m */,
 			);
 			path = SODownloadExample;
 			sourceTree = "<group>";
@@ -170,6 +175,7 @@
 				09B85BAF1CD8CD6E00FE4D7E /* SODownloadItem.m in Sources */,
 				09B85B9A1CD8CD1B00FE4D7E /* ViewController.m in Sources */,
 				09B85B971CD8CD1B00FE4D7E /* AppDelegate.m in Sources */,
+				09B85BB21CD8E85400FE4D7E /* SOMusic.m in Sources */,
 				09B85BAC1CD8CD5F00FE4D7E /* SODownloader.m in Sources */,
 				09B85B941CD8CD1B00FE4D7E /* main.m in Sources */,
 			);
@@ -322,6 +328,7 @@
 				09B85BA81CD8CD1B00FE4D7E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
