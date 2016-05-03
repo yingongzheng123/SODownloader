@@ -13,6 +13,8 @@
 		09B85B9D1CD8CD1B00FE4D7E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09B85B9B1CD8CD1B00FE4D7E /* Main.storyboard */; };
 		09B85B9F1CD8CD1B00FE4D7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 09B85B9E1CD8CD1B00FE4D7E /* Assets.xcassets */; };
 		09B85BA21CD8CD1B00FE4D7E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09B85BA01CD8CD1B00FE4D7E /* LaunchScreen.storyboard */; };
+		09B85BAC1CD8CD5F00FE4D7E /* SODownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B85BAB1CD8CD5F00FE4D7E /* SODownloader.m */; };
+		09B85BAF1CD8CD6E00FE4D7E /* SODownloadItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B85BAE1CD8CD6E00FE4D7E /* SODownloadItem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,10 @@
 		09B85B9E1CD8CD1B00FE4D7E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		09B85BA11CD8CD1B00FE4D7E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		09B85BA31CD8CD1B00FE4D7E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		09B85BAA1CD8CD5F00FE4D7E /* SODownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SODownloader.h; sourceTree = "<group>"; };
+		09B85BAB1CD8CD5F00FE4D7E /* SODownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SODownloader.m; sourceTree = "<group>"; };
+		09B85BAD1CD8CD6E00FE4D7E /* SODownloadItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SODownloadItem.h; sourceTree = "<group>"; };
+		09B85BAE1CD8CD6E00FE4D7E /* SODownloadItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SODownloadItem.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +64,7 @@
 		09B85B911CD8CD1B00FE4D7E /* SODownloadExample */ = {
 			isa = PBXGroup;
 			children = (
+				09B85BA91CD8CD4300FE4D7E /* SODownloader */,
 				09B85B951CD8CD1B00FE4D7E /* AppDelegate.h */,
 				09B85B961CD8CD1B00FE4D7E /* AppDelegate.m */,
 				09B85B981CD8CD1B00FE4D7E /* ViewController.h */,
@@ -77,6 +84,17 @@
 				09B85B931CD8CD1B00FE4D7E /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		09B85BA91CD8CD4300FE4D7E /* SODownloader */ = {
+			isa = PBXGroup;
+			children = (
+				09B85BAA1CD8CD5F00FE4D7E /* SODownloader.h */,
+				09B85BAB1CD8CD5F00FE4D7E /* SODownloader.m */,
+				09B85BAD1CD8CD6E00FE4D7E /* SODownloadItem.h */,
+				09B85BAE1CD8CD6E00FE4D7E /* SODownloadItem.m */,
+			);
+			path = SODownloader;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -149,8 +167,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09B85BAF1CD8CD6E00FE4D7E /* SODownloadItem.m in Sources */,
 				09B85B9A1CD8CD1B00FE4D7E /* ViewController.m in Sources */,
 				09B85B971CD8CD1B00FE4D7E /* AppDelegate.m in Sources */,
+				09B85BAC1CD8CD5F00FE4D7E /* SODownloader.m in Sources */,
 				09B85B941CD8CD1B00FE4D7E /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
