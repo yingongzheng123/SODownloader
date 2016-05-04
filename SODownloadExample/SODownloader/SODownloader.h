@@ -17,4 +17,5 @@ typedef NS_ENUM(NSUInteger, SODownloadPriorityType) {
 
 + (instancetype)sharedDownloader;
 
+
 @end
