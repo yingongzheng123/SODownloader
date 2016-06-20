@@ -16,6 +16,14 @@
 		09B85BAC1CD8CD5F00FE4D7E /* SODownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B85BAB1CD8CD5F00FE4D7E /* SODownloader.m */; };
 		09B85BAF1CD8CD6E00FE4D7E /* SODownloadItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B85BAE1CD8CD6E00FE4D7E /* SODownloadItem.m */; };
 		09B85BB21CD8E85400FE4D7E /* SOMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B85BB11CD8E85400FE4D7E /* SOMusic.m */; };
+		D9A0841D1D1796FC0093955A /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A084111D1796FC0093955A /* AFHTTPSessionManager.m */; };
+		D9A0841E1D1796FC0093955A /* AFNetworkReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A084141D1796FC0093955A /* AFNetworkReachabilityManager.m */; };
+		D9A0841F1D1796FC0093955A /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A084161D1796FC0093955A /* AFSecurityPolicy.m */; };
+		D9A084201D1796FC0093955A /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A084181D1796FC0093955A /* AFURLRequestSerialization.m */; };
+		D9A084211D1796FC0093955A /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A0841A1D1796FC0093955A /* AFURLResponseSerialization.m */; };
+		D9A084221D1796FC0093955A /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A0841C1D1796FC0093955A /* AFURLSessionManager.m */; };
+		D9A084251D1797DD0093955A /* SOMusicListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A084241D1797DD0093955A /* SOMusicListViewController.m */; };
+		D9A084281D17981F0093955A /* SOMusicListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A084271D17981F0093955A /* SOMusicListCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +43,23 @@
 		09B85BAE1CD8CD6E00FE4D7E /* SODownloadItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SODownloadItem.m; sourceTree = "<group>"; };
 		09B85BB01CD8E85400FE4D7E /* SOMusic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOMusic.h; sourceTree = "<group>"; };
 		09B85BB11CD8E85400FE4D7E /* SOMusic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOMusic.m; sourceTree = "<group>"; };
+		D9A084101D1796FC0093955A /* AFHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPSessionManager.h; sourceTree = "<group>"; };
+		D9A084111D1796FC0093955A /* AFHTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManager.m; sourceTree = "<group>"; };
+		D9A084121D1796FC0093955A /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworking.h; sourceTree = "<group>"; };
+		D9A084131D1796FC0093955A /* AFNetworkReachabilityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkReachabilityManager.h; sourceTree = "<group>"; };
+		D9A084141D1796FC0093955A /* AFNetworkReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkReachabilityManager.m; sourceTree = "<group>"; };
+		D9A084151D1796FC0093955A /* AFSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSecurityPolicy.h; sourceTree = "<group>"; };
+		D9A084161D1796FC0093955A /* AFSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicy.m; sourceTree = "<group>"; };
+		D9A084171D1796FC0093955A /* AFURLRequestSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLRequestSerialization.h; sourceTree = "<group>"; };
+		D9A084181D1796FC0093955A /* AFURLRequestSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLRequestSerialization.m; sourceTree = "<group>"; };
+		D9A084191D1796FC0093955A /* AFURLResponseSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLResponseSerialization.h; sourceTree = "<group>"; };
+		D9A0841A1D1796FC0093955A /* AFURLResponseSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLResponseSerialization.m; sourceTree = "<group>"; };
+		D9A0841B1D1796FC0093955A /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
+		D9A0841C1D1796FC0093955A /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
+		D9A084231D1797DD0093955A /* SOMusicListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOMusicListViewController.h; sourceTree = "<group>"; };
+		D9A084241D1797DD0093955A /* SOMusicListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOMusicListViewController.m; sourceTree = "<group>"; };
+		D9A084261D17981F0093955A /* SOMusicListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOMusicListCell.h; sourceTree = "<group>"; };
+		D9A084271D17981F0093955A /* SOMusicListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOMusicListCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +92,7 @@
 		09B85B911CD8CD1B00FE4D7E /* SODownloadExample */ = {
 			isa = PBXGroup;
 			children = (
+				D9A0840F1D1796FC0093955A /* AFNetworking */,
 				09B85BA91CD8CD4300FE4D7E /* SODownloader */,
 				09B85B951CD8CD1B00FE4D7E /* AppDelegate.h */,
 				09B85B961CD8CD1B00FE4D7E /* AppDelegate.m */,
@@ -79,6 +105,10 @@
 				09B85B921CD8CD1B00FE4D7E /* Supporting Files */,
 				09B85BB01CD8E85400FE4D7E /* SOMusic.h */,
 				09B85BB11CD8E85400FE4D7E /* SOMusic.m */,
+				D9A084231D1797DD0093955A /* SOMusicListViewController.h */,
+				D9A084241D1797DD0093955A /* SOMusicListViewController.m */,
+				D9A084261D17981F0093955A /* SOMusicListCell.h */,
+				D9A084271D17981F0093955A /* SOMusicListCell.m */,
 			);
 			path = SODownloadExample;
 			sourceTree = "<group>";
@@ -100,6 +130,26 @@
 				09B85BAE1CD8CD6E00FE4D7E /* SODownloadItem.m */,
 			);
 			path = SODownloader;
+			sourceTree = "<group>";
+		};
+		D9A0840F1D1796FC0093955A /* AFNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				D9A084101D1796FC0093955A /* AFHTTPSessionManager.h */,
+				D9A084111D1796FC0093955A /* AFHTTPSessionManager.m */,
+				D9A084121D1796FC0093955A /* AFNetworking.h */,
+				D9A084131D1796FC0093955A /* AFNetworkReachabilityManager.h */,
+				D9A084141D1796FC0093955A /* AFNetworkReachabilityManager.m */,
+				D9A084151D1796FC0093955A /* AFSecurityPolicy.h */,
+				D9A084161D1796FC0093955A /* AFSecurityPolicy.m */,
+				D9A084171D1796FC0093955A /* AFURLRequestSerialization.h */,
+				D9A084181D1796FC0093955A /* AFURLRequestSerialization.m */,
+				D9A084191D1796FC0093955A /* AFURLResponseSerialization.h */,
+				D9A0841A1D1796FC0093955A /* AFURLResponseSerialization.m */,
+				D9A0841B1D1796FC0093955A /* AFURLSessionManager.h */,
+				D9A0841C1D1796FC0093955A /* AFURLSessionManager.m */,
+			);
+			path = AFNetworking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,10 +223,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				09B85BAF1CD8CD6E00FE4D7E /* SODownloadItem.m in Sources */,
+				D9A0841F1D1796FC0093955A /* AFSecurityPolicy.m in Sources */,
 				09B85B9A1CD8CD1B00FE4D7E /* ViewController.m in Sources */,
 				09B85B971CD8CD1B00FE4D7E /* AppDelegate.m in Sources */,
+				D9A084211D1796FC0093955A /* AFURLResponseSerialization.m in Sources */,
 				09B85BB21CD8E85400FE4D7E /* SOMusic.m in Sources */,
 				09B85BAC1CD8CD5F00FE4D7E /* SODownloader.m in Sources */,
+				D9A0841D1D1796FC0093955A /* AFHTTPSessionManager.m in Sources */,
+				D9A084201D1796FC0093955A /* AFURLRequestSerialization.m in Sources */,
+				D9A084251D1797DD0093955A /* SOMusicListViewController.m in Sources */,
+				D9A084221D1796FC0093955A /* AFURLSessionManager.m in Sources */,
+				D9A084281D17981F0093955A /* SOMusicListCell.m in Sources */,
+				D9A0841E1D1796FC0093955A /* AFNetworkReachabilityManager.m in Sources */,
 				09B85B941CD8CD1B00FE4D7E /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

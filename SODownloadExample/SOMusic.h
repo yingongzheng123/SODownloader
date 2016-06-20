@@ -8,8 +8,12 @@
 
 #import "SODownloadItem.h"
 
-@interface SOMusic : SODownloadItem
+@interface SOMusic : NSObject
 
 @property (copy, nonatomic) NSString *title;
+
+- (void)download;
+
++ (NSArray *)allMusicList;
 
 @end
