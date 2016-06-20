@@ -1,16 +1,14 @@
 //
 //  SODownloader.m
-//  SOMoviePlayerDemo
+//  SODownloadExample
 //
-//  Created by scfhao on 16/6/17.
-//  Copyright © 2016年 Phoenix E-Learning. All rights reserved.
+//  Created by xueyi on 16/5/3.
+//  Copyright © 2016年 http://scfhao.coding.me. All rights reserved.
 //
 
 #import "SODownloader.h"
-#import "SODownloadItem.h"
 
 @interface SODownloader ()
-
 @property (nonatomic, assign) NSInteger activeRequestCount;
 @property (nonatomic, strong) NSMutableArray *highPriorityTasks;
 @property (nonatomic, strong) NSMutableArray *normalPriorityTasks;
@@ -18,40 +16,26 @@
 @property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
 @property (nonatomic, strong) dispatch_queue_t synchronizationQueue;
 @property (nonatomic, strong) dispatch_queue_t responseQueue;
+@property (nonatomic, strong) dispatch_queue_t responseQueue;
 
 @end
 
-@implementation SODownloader
-
-+ (instancetype)sharedDownloader {
-    static SODownloader *downloader = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        downloader = [[self alloc]init];
-        downloader.maximumActiveDownloads = 1;
-    });
-    return downloader;
-}
-
-- (instancetype)init {
-    self = [super init];
-    if (self) {
         NSString *queueLabel = [NSString stringWithFormat:@"cn.scfhao.downloader.synchronizationQueue-%@", [NSUUID UUID].UUIDString];
         self.synchronizationQueue = dispatch_queue_create([queueLabel UTF8String], DISPATCH_QUEUE_SERIAL);
-        
++ (instancetype)sharedDownloader {
         queueLabel = [NSString stringWithFormat:@"cn.scfhao.downloader.responseQueue-%@", [NSUUID UUID].UUIDString];
         self.responseQueue = dispatch_queue_create([queueLabel UTF8String], DISPATCH_QUEUE_CONCURRENT);
-        
+
         NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
         self.sessionManager = [[AFHTTPSessionManager alloc]initWithSessionConfiguration:sessionConfiguration];
         
         self.highPriorityTasks = [[NSMutableArray alloc]init];
         self.normalPriorityTasks = [[NSMutableArray alloc]init];
         self.tasks = [[NSMutableDictionary alloc]init];
-    }
-    return self;
-}
-
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        NSString *queueLabel = [NSString stringWithFormat:@"cn.scfhao.downloader.synchronizationQueue-%@", [NSUUID UUID].UUIDString];
 - (NSURLSessionDownloadTask *)downloadFileFromURLString:(NSString *)URLIdentifier
                                                priority:(SODownloadPriority)priority
                                                progress:(nullable void (^)(NSProgress *downloadProgress)) downloadProgressBlock
@@ -66,7 +50,7 @@
             downloadTask = existingDownloadTask;
             return ;
         }
-        
+
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:URLIdentifier]];
         if (!request && failure) {
             NSError *URLError = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
@@ -88,6 +72,21 @@
                 } else {
                     if (success) {
                         dispatch_async(dispatch_get_main_queue(), ^{
+                            success((NSHTTPURLResponse *)response, filePath);
+                        });
+                    }
+                }
+                [strongSelf safelyDecrementActiveTaskCount];
+                [strongSelf safelyStartNextTaskIfNecessary];
+            });
+        }];
+        if ([self isActiveRequestCountBelowMaximumLimit]) {
+            [self startDownloadTask:downloadTask];
+        } else {
+            [self enqueueTask:downloadTask priority:priority];
+        }
+                    if (success) {
+    return downloadTask;
                             success((NSHTTPURLResponse *)response, filePath);
                         });
                     }
@@ -187,7 +186,5 @@
         _maximumActiveDownloads = maximumActiveDownloads;
     });
 }
-
-
 
 @end

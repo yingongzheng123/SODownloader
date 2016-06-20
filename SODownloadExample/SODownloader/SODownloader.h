@@ -1,9 +1,9 @@
 //
 //  SODownloader.h
-//  SOMoviePlayerDemo
+//  SODownloadExample
 //
-//  Created by scfhao on 16/6/17.
-//  Copyright © 2016年 Phoenix E-Learning. All rights reserved.
+//  Created by xueyi on 16/5/3.
+//  Copyright © 2016年 http://scfhao.coding.me. All rights reserved.
 //
 
 #import "AFHTTPSessionManager.h"
