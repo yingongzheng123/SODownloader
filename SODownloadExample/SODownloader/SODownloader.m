@@ -7,6 +7,7 @@
 //
 
 #import "SODownloader.h"
+#import "SODownloadItem.h"
 
 @interface SODownloader ()
 
@@ -186,5 +187,7 @@
         _maximumActiveDownloads = maximumActiveDownloads;
     });
 }
+
+
 
 @end

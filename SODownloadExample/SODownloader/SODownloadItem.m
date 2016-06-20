@@ -10,6 +10,7 @@
 
 @implementation SODownloadItem
 @synthesize downloadProgress = _downloadProgress;
+@synthesize downloadState = _downloadState;
 
 - (NSURL *)downloadURL {
     NSLog(@"[SODownloader]:Your download item class must implements -(NSURL *)downloadURL method declare in protocol SODownloadItem");
