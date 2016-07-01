@@ -11,6 +11,8 @@
 
 @interface SOMusicListCell : UITableViewCell
 
-- (void)configureMusic:(SOMusic *)music;
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *stateLabel;
+@property (weak, nonatomic) IBOutlet UIButton *downloadButton;
 
 @end

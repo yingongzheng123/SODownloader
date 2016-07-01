@@ -6,13 +6,14 @@
 //  Copyright © 2016年 http://scfhao.coding.me. All rights reserved.
 //
 
-#import "SODownloadItem.h"
+#import <Foundation/Foundation.h>
 
 @interface SOMusic : NSObject
 
 @property (copy, nonatomic) NSString *title;
+@property (copy, nonatomic) NSString *fileName;
 
-- (void)download;
+@property (strong, nonatomic, readonly) NSString *downloadURL;
 
 + (NSArray *)allMusicList;
 

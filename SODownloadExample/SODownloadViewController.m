@@ -1,27 +1,29 @@
 //
-//  ViewController.m
+//  SODownloadViewController.m
 //  SODownloadExample
 //
-//  Created by xueyi on 16/5/3.
+//  Created by scfhao on 16/7/1.
 //  Copyright © 2016年 http://scfhao.coding.me. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "SODownloadViewController.h"
 
-@interface ViewController ()
+@interface SODownloadViewController ()
 
 @end
 
-@implementation ViewController
+@implementation SODownloadViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    // Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
 
 @end

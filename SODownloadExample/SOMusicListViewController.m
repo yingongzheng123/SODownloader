@@ -22,16 +22,17 @@
     [super viewDidLoad];
     
     self.musicArray = [SOMusic allMusicList];
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Download action
+- (void)downloadMusic:(UIButton *)sender {
+    
 }
 
 #pragma mark - Table view data source
@@ -42,9 +43,13 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SOMusicListCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([SOMusicListCell class]) forIndexPath:indexPath];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     SOMusic *music = self.musicArray[indexPath.row];
-    [cell configureMusic:music];
+    cell.titleLabel.text = music.title;
+    cell.stateLabel.text = @"未下载";
+    cell.downloadButton.tag = indexPath.row;
+    [cell.downloadButton addTarget:self action:@selector(downloadMusic:) forControlEvents:UIControlEventTouchUpInside];
     
     return cell;
 }

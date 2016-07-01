@@ -1,21 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="XGb-Ea-MrI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ejd-Rt-zrM">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Music List View Controller-->
+        <!--Tab Bar Controller-->
+        <scene sceneID="6C9-LJ-UuQ">
+            <objects>
+                <tabBarController id="ejd-Rt-zrM" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="UcN-iJ-7cF">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="rnw-Er-tkv" kind="relationship" relationship="viewControllers" id="QU8-sX-DAJ"/>
+                        <segue destination="RDj-LO-W5j" kind="relationship" relationship="viewControllers" id="4Qr-if-9Iq"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="v8a-Hu-H70" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-951" y="-132"/>
+        </scene>
+        <!--下载中心-->
         <scene sceneID="kIc-7O-Jyg">
             <objects>
-                <tableViewController id="XGb-Ea-MrI" customClass="SOMusicListViewController" sceneMemberID="viewController">
+                <tableViewController id="XGb-Ea-MrI" customClass="SODownloadViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="48" sectionHeaderHeight="28" sectionFooterHeight="28" id="amT-Ti-YJ0">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SOMusicListCell" rowHeight="48" id="KXH-JF-2F8" customClass="SOMusicListCell">
-                                <rect key="frame" x="0.0" y="28" width="600" height="48"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="loading" rowHeight="48" id="KXH-JF-2F8" customClass="SOLoadingMusicCell">
+                                <rect key="frame" x="0.0" y="92" width="600" height="48"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KXH-JF-2F8" id="Ou8-JM-sDq">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="47.5"/>
@@ -41,10 +60,22 @@
                                         <constraint firstItem="ixO-N4-Keo" firstAttribute="leading" secondItem="Ou8-JM-sDq" secondAttribute="leading" constant="8" id="q0O-v4-bdQ"/>
                                     </constraints>
                                 </tableViewCellContentView>
-                                <connections>
-                                    <outlet property="nameLabel" destination="ixO-N4-Keo" id="GCG-0x-fQa"/>
-                                    <outlet property="progressView" destination="aKM-19-fWy" id="DES-2B-WpT"/>
-                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="local" id="aJs-gS-iA6" customClass="SOLocalMusicCell">
+                                <rect key="frame" x="0.0" y="140" width="600" height="48"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aJs-gS-iA6" id="kOk-bt-6tW">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="47.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NBF-zs-hds">
+                                            <rect key="frame" x="8" y="13" width="584" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -52,10 +83,125 @@
                             <outlet property="delegate" destination="XGb-Ea-MrI" id="UYj-ce-9Vy"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" title="下载中心" id="hJF-9W-jPU"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dbD-dZ-heh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="309" y="283"/>
+            <point key="canvasLocation" x="631" y="198"/>
+        </scene>
+        <!--歌曲列表-->
+        <scene sceneID="vk8-qB-wZn">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="rnw-Er-tkv" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="歌曲列表" image="icon.music" id="wiE-Hx-kN7"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Xnh-qa-0ow">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="brD-90-eQx" kind="relationship" relationship="rootViewController" id="pz2-Pe-RGZ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TFH-f3-Q3G" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-131" y="-605"/>
+        </scene>
+        <!--我的下载-->
+        <scene sceneID="ZDP-gW-aaC">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="RDj-LO-W5j" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="我的下载" image="icon.download" id="ZhB-Ge-BaJ"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="cSb-Iv-T3M">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="XGb-Ea-MrI" kind="relationship" relationship="rootViewController" id="HMY-Q5-G9H"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tei-Q3-7S6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-131" y="198"/>
+        </scene>
+        <!--热门曲目-->
+        <scene sceneID="Aek-Wh-jaW">
+            <objects>
+                <tableViewController id="brD-90-eQx" customClass="SOMusicListViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="65" sectionHeaderHeight="28" sectionFooterHeight="28" id="LRY-UJ-10d">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SOMusicListCell" rowHeight="65" id="ZR4-Dl-EvT" customClass="SOMusicListCell">
+                                <rect key="frame" x="0.0" y="92" width="375" height="65"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZR4-Dl-EvT" id="k6h-C5-brz">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="64.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="宝贝" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rsj-zU-x1q">
+                                            <rect key="frame" x="8" y="8" width="319" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="下载中" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mUl-ZM-7Zj">
+                                            <rect key="frame" x="8" y="36" width="319" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rcC-lV-Y9B">
+                                            <rect key="frame" x="335" y="17" width="32" height="32"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="32" id="Y3V-zu-FDM"/>
+                                                <constraint firstAttribute="height" constant="32" id="lYC-7g-eIi"/>
+                                            </constraints>
+                                            <state key="normal" image="btn.download"/>
+                                            <connections>
+                                                <action selector="downloadAction:" destination="ZR4-Dl-EvT" eventType="touchUpInside" id="vDw-3x-ijc"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="rcC-lV-Y9B" firstAttribute="centerY" secondItem="k6h-C5-brz" secondAttribute="centerY" id="9nr-lF-8ji"/>
+                                        <constraint firstItem="rcC-lV-Y9B" firstAttribute="leading" secondItem="Rsj-zU-x1q" secondAttribute="trailing" constant="8" id="MVa-5g-30M"/>
+                                        <constraint firstItem="mUl-ZM-7Zj" firstAttribute="top" secondItem="Rsj-zU-x1q" secondAttribute="bottom" constant="7" id="Whf-en-hIn"/>
+                                        <constraint firstItem="rcC-lV-Y9B" firstAttribute="leading" secondItem="mUl-ZM-7Zj" secondAttribute="trailing" constant="8" id="XIZ-HV-aHa"/>
+                                        <constraint firstAttribute="bottom" secondItem="mUl-ZM-7Zj" secondAttribute="bottom" constant="8" id="aDB-Cu-g3G"/>
+                                        <constraint firstItem="mUl-ZM-7Zj" firstAttribute="leading" secondItem="k6h-C5-brz" secondAttribute="leading" constant="8" id="jHa-SN-qRd"/>
+                                        <constraint firstItem="rcC-lV-Y9B" firstAttribute="trailing" secondItem="k6h-C5-brz" secondAttribute="trailingMargin" id="l9W-RN-93M"/>
+                                        <constraint firstItem="Rsj-zU-x1q" firstAttribute="top" secondItem="k6h-C5-brz" secondAttribute="top" constant="8" id="oIf-Gu-pYR"/>
+                                        <constraint firstItem="Rsj-zU-x1q" firstAttribute="leading" secondItem="k6h-C5-brz" secondAttribute="leading" constant="8" id="w6k-M3-dBf"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="downloadButton" destination="rcC-lV-Y9B" id="L6q-ih-TqW"/>
+                                    <outlet property="stateLabel" destination="mUl-ZM-7Zj" id="MYg-pd-cCZ"/>
+                                    <outlet property="titleLabel" destination="Rsj-zU-x1q" id="vI9-qi-UvI"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="brD-90-eQx" id="KYi-4v-pmT"/>
+                            <outlet property="delegate" destination="brD-90-eQx" id="kHZ-tN-8Gi"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="热门曲目" id="AfM-lh-EHJ"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dS7-3z-mdU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="630.5" y="-605.5"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="btn.download" width="32" height="32"/>
+        <image name="icon.download" width="32" height="32"/>
+        <image name="icon.music" width="32" height="32"/>
+    </resources>
 </document>

@@ -13,65 +13,44 @@
 
 + (NSArray *)allMusicList {
     return @[
-        [SOMusic musicWithTitle:@"AiMei"],
-        [SOMusic musicWithTitle:@"BaiNianGuJi"],
-        [SOMusic musicWithTitle:@"BuAiWoDeWoBuAi"],
-        [SOMusic musicWithTitle:@"BuLiu"],
-        [SOMusic musicWithTitle:@"ChuanQi"],
-        [SOMusic musicWithTitle:@"CuiMian"],
-        [SOMusic musicWithTitle:@"DiDar"],
-        [SOMusic musicWithTitle:@"HuDie"],
-        [SOMusic musicWithTitle:@"HuaShiLiao"],
-        [SOMusic musicWithTitle:@"LiuNian"],
-        [SOMusic musicWithTitle:@"Meng"],
-        [SOMusic musicWithTitle:@"MiHongJi"],
-        [SOMusic musicWithTitle:@"NaXieHuaEr"],
-        [SOMusic musicWithTitle:@"QiZi"],
-        [SOMusic musicWithTitle:@"RenJian"],
-        [SOMusic musicWithTitle:@"RongYiShouShangDeNvRen"],
-        [SOMusic musicWithTitle:@"ShiYan"],
-        [SOMusic musicWithTitle:@"TianYuDi"],
-        [SOMusic musicWithTitle:@"XiaoWangShu"],
-        [SOMusic musicWithTitle:@"XuanMu"]
+        [SOMusic musicWithTitle:@"暧昧" fileName:@"AiMei"],
+        [SOMusic musicWithTitle:@"百年孤寂" fileName:@"BaiNianGuJi"],
+        [SOMusic musicWithTitle:@"不爱我的我不爱" fileName:@"BuAiWoDeWoBuAi"],
+        [SOMusic musicWithTitle:@"不留" fileName:@"BuLiu"],
+        [SOMusic musicWithTitle:@"传奇" fileName:@"ChuanQi"],
+        [SOMusic musicWithTitle:@"催眠" fileName:@"CuiMian"],
+        [SOMusic musicWithTitle:@"Di Dar" fileName:@"DiDar"],
+        [SOMusic musicWithTitle:@"蝴蝶" fileName:@"HuDie"],
+        [SOMusic musicWithTitle:@"花事了" fileName:@"HuaShiLiao"],
+        [SOMusic musicWithTitle:@"流年" fileName:@"LiuNian"],
+        [SOMusic musicWithTitle:@"闷" fileName:@"Meng"],
+        [SOMusic musicWithTitle:@"迷魂记" fileName:@"MiHongJi"],
+        [SOMusic musicWithTitle:@"那些花儿" fileName:@"NaXieHuaEr"],
+        [SOMusic musicWithTitle:@"棋子" fileName:@"QiZi"],
+        [SOMusic musicWithTitle:@"人间" fileName:@"RenJian"],
+        [SOMusic musicWithTitle:@"容易受伤的女人" fileName:@"RongYiShouShangDeNvRen"],
+        [SOMusic musicWithTitle:@"誓言" fileName:@"ShiYan"],
+        [SOMusic musicWithTitle:@"天与地" fileName:@"TianYuDi"],
+        [SOMusic musicWithTitle:@"笑忘书" fileName:@"XiaoWangShu"],
+        [SOMusic musicWithTitle:@"旋木" fileName:@"XuanMu"]
     ];
 }
 
-+ (instancetype)musicWithTitle:(NSString *)title {
-    return [[self alloc]initWithTitle:title];
++ (instancetype)musicWithTitle:(NSString *)title fileName:(NSString *)fileName {
+    return [[self alloc]initWithTitle:title fileName:fileName];
 }
 
-- (instancetype)initWithTitle:(NSString *)title {
+- (instancetype)initWithTitle:(NSString *)title fileName:(NSString *)fileName {
     self = [super init];
     if (self) {
         self.title = title;
+        self.fileName = fileName;
     }
     return self;
 }
 
 - (NSString *)downloadURL {
-    return [NSString stringWithFormat:@"http://o6lpg3g95.bkt.clouddn.com/%@.mp3", self.title];
-}
-
-- (void)download {
-    [[SODownloader sharedDownloader]downloadFileFromURLString:[self downloadURL] priority:SODownloadPriorityNormal progress:^(NSProgress * _Nonnull downloadProgress) {
-        NSLog(@"%@--%.1f", self.title, downloadProgress.fractionCompleted);
-    } destination:nil success:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath) {
-        NSLog(@"%@--下载完成", self.title);
-    } failure:^(NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        NSLog(@"%@--下载失败:%@", self.title, error);
-    }];
-}
-
-- (NSUInteger)hash {
-    return [self.title hash];
-}
-
-- (BOOL)isEqual:(id)object {
-    if ([object isKindOfClass:[SOMusic class]]) {
-        NSString *otherTitle = [(SOMusic *)object title];
-        return [self.title isEqualToString:otherTitle];
-    }
-    return NO;
+    return [NSString stringWithFormat:@"http://o6lpg3g95.bkt.clouddn.com/%@.mp3", self.fileName];
 }
 
 @end

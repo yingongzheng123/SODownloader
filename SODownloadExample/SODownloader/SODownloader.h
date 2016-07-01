@@ -6,7 +6,7 @@
 //  Copyright © 2016年 http://scfhao.coding.me. All rights reserved.
 //
 
-#import "AFHTTPSessionManager.h"
+#import <AFHTTPSessionManager.h>
 
 /**
  @enum 下载优先级
