@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-
-@interface SOMusic : NSObject
+#import "SODownloadItem.h"
+@interface SOMusic : NSObject<SODownloadItem>
 
 @property (copy, nonatomic) NSString *title;
 @property (copy, nonatomic) NSString *fileName;
 
-@property (strong, nonatomic, readonly) NSString *downloadURL;
+@property (strong, nonatomic, readonly) NSURL *downloadURL;
 
 + (NSArray *)allMusicList;
 

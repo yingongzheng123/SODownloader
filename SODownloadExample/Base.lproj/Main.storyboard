@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ejd-Rt-zrM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="ejd-Rt-zrM">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Tab Bar Controller-->
@@ -37,7 +36,7 @@
                                 <rect key="frame" x="0.0" y="92" width="600" height="48"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KXH-JF-2F8" id="Ou8-JM-sDq">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="47.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="47"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ixO-N4-Keo">
@@ -65,7 +64,7 @@
                                 <rect key="frame" x="0.0" y="140" width="600" height="48"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aJs-gS-iA6" id="kOk-bt-6tW">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="47.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="47"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NBF-zs-hds">
@@ -140,47 +139,48 @@
                                 <rect key="frame" x="0.0" y="92" width="375" height="65"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZR4-Dl-EvT" id="k6h-C5-brz">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="64.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="64"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="宝贝" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rsj-zU-x1q">
-                                            <rect key="frame" x="8" y="8" width="319" height="21"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="宝贝" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rsj-zU-x1q">
+                                            <rect key="frame" x="8" y="8" width="110" height="21"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="110" id="pIx-V8-jDb"/>
+                                            </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="下载中" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mUl-ZM-7Zj">
-                                            <rect key="frame" x="8" y="36" width="319" height="21"/>
+                                            <rect key="frame" x="8" y="36" width="51" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rcC-lV-Y9B">
-                                            <rect key="frame" x="335" y="17" width="32" height="32"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="32" id="Y3V-zu-FDM"/>
-                                                <constraint firstAttribute="height" constant="32" id="lYC-7g-eIi"/>
-                                            </constraints>
-                                            <state key="normal" image="btn.download"/>
-                                            <connections>
-                                                <action selector="downloadAction:" destination="ZR4-Dl-EvT" eventType="touchUpInside" id="vDw-3x-ijc"/>
-                                            </connections>
-                                        </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RDs-Ua-mUZ">
+                                            <rect key="frame" x="126" y="8" width="42" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="rcC-lV-Y9B" firstAttribute="centerY" secondItem="k6h-C5-brz" secondAttribute="centerY" id="9nr-lF-8ji"/>
-                                        <constraint firstItem="rcC-lV-Y9B" firstAttribute="leading" secondItem="Rsj-zU-x1q" secondAttribute="trailing" constant="8" id="MVa-5g-30M"/>
+                                        <constraint firstItem="RDs-Ua-mUZ" firstAttribute="leading" secondItem="Rsj-zU-x1q" secondAttribute="trailing" constant="8" id="LGX-Rf-57E"/>
+                                        <constraint firstItem="RDs-Ua-mUZ" firstAttribute="top" secondItem="k6h-C5-brz" secondAttribute="top" constant="8" id="Sqz-Yp-gah"/>
                                         <constraint firstItem="mUl-ZM-7Zj" firstAttribute="top" secondItem="Rsj-zU-x1q" secondAttribute="bottom" constant="7" id="Whf-en-hIn"/>
-                                        <constraint firstItem="rcC-lV-Y9B" firstAttribute="leading" secondItem="mUl-ZM-7Zj" secondAttribute="trailing" constant="8" id="XIZ-HV-aHa"/>
                                         <constraint firstAttribute="bottom" secondItem="mUl-ZM-7Zj" secondAttribute="bottom" constant="8" id="aDB-Cu-g3G"/>
                                         <constraint firstItem="mUl-ZM-7Zj" firstAttribute="leading" secondItem="k6h-C5-brz" secondAttribute="leading" constant="8" id="jHa-SN-qRd"/>
-                                        <constraint firstItem="rcC-lV-Y9B" firstAttribute="trailing" secondItem="k6h-C5-brz" secondAttribute="trailingMargin" id="l9W-RN-93M"/>
                                         <constraint firstItem="Rsj-zU-x1q" firstAttribute="top" secondItem="k6h-C5-brz" secondAttribute="top" constant="8" id="oIf-Gu-pYR"/>
                                         <constraint firstItem="Rsj-zU-x1q" firstAttribute="leading" secondItem="k6h-C5-brz" secondAttribute="leading" constant="8" id="w6k-M3-dBf"/>
                                     </constraints>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="aDB-Cu-g3G"/>
+                                        </mask>
+                                    </variation>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="downloadButton" destination="rcC-lV-Y9B" id="L6q-ih-TqW"/>
+                                    <outlet property="progressLabel" destination="RDs-Ua-mUZ" id="QOi-tf-uEp"/>
                                     <outlet property="stateLabel" destination="mUl-ZM-7Zj" id="MYg-pd-cCZ"/>
                                     <outlet property="titleLabel" destination="Rsj-zU-x1q" id="vI9-qi-UvI"/>
                                 </connections>
@@ -200,7 +200,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="btn.download" width="32" height="32"/>
         <image name="icon.download" width="32" height="32"/>
         <image name="icon.music" width="32" height="32"/>
     </resources>

@@ -16,6 +16,7 @@
 		09B85BAF1CD8CD6E00FE4D7E /* SODownloadItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B85BAE1CD8CD6E00FE4D7E /* SODownloadItem.m */; };
 		09B85BB21CD8E85400FE4D7E /* SOMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B85BB11CD8E85400FE4D7E /* SOMusic.m */; };
 		6D65B6FE9D72C3A75D2CE299 /* libPods-SODownloadExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13C5B33B2BB92859BC6F0183 /* libPods-SODownloadExample.a */; };
+		D986CB601D82A9A300220F09 /* SODownloader+MusicDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = D986CB5F1D82A9A300220F09 /* SODownloader+MusicDownloader.m */; };
 		D9A084251D1797DD0093955A /* SOMusicListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A084241D1797DD0093955A /* SOMusicListViewController.m */; };
 		D9A084281D17981F0093955A /* SOMusicListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A084271D17981F0093955A /* SOMusicListCell.m */; };
 		D9AF5C9D1D266ECC00A22593 /* SODownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9AF5C9C1D266ECC00A22593 /* SODownloadViewController.m */; };
@@ -43,6 +44,8 @@
 		13C5B33B2BB92859BC6F0183 /* libPods-SODownloadExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SODownloadExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D986CB5C1D82554100220F09 /* SODownloader设计.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "SODownloader设计.md"; sourceTree = "<group>"; };
 		D986CB5D1D825FEB00220F09 /* SOLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOLog.h; sourceTree = "<group>"; };
+		D986CB5E1D82A9A300220F09 /* SODownloader+MusicDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SODownloader+MusicDownloader.h"; sourceTree = "<group>"; };
+		D986CB5F1D82A9A300220F09 /* SODownloader+MusicDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SODownloader+MusicDownloader.m"; sourceTree = "<group>"; };
 		D9A084231D1797DD0093955A /* SOMusicListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOMusicListViewController.h; sourceTree = "<group>"; };
 		D9A084241D1797DD0093955A /* SOMusicListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOMusicListViewController.m; sourceTree = "<group>"; };
 		D9A084261D17981F0093955A /* SOMusicListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOMusicListCell.h; sourceTree = "<group>"; };
@@ -163,6 +166,8 @@
 				09B85BB11CD8E85400FE4D7E /* SOMusic.m */,
 				D9AF5CA71D26715900A22593 /* SOLocalStore.h */,
 				D9AF5CA81D26715900A22593 /* SOLocalStore.m */,
+				D986CB5E1D82A9A300220F09 /* SODownloader+MusicDownloader.h */,
+				D986CB5F1D82A9A300220F09 /* SODownloader+MusicDownloader.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -317,6 +322,7 @@
 				D9AF5CA91D26715900A22593 /* SOLocalStore.m in Sources */,
 				D9AF5CA31D26707D00A22593 /* SOLocalMusicCell.m in Sources */,
 				D9A084251D1797DD0093955A /* SOMusicListViewController.m in Sources */,
+				D986CB601D82A9A300220F09 /* SODownloader+MusicDownloader.m in Sources */,
 				D9A084281D17981F0093955A /* SOMusicListCell.m in Sources */,
 				09B85B941CD8CD1B00FE4D7E /* main.m in Sources */,
 			);

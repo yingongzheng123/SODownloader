@@ -9,6 +9,7 @@
 #import "SOMusicListViewController.h"
 #import "SOMusic.h"
 #import "SOMusicListCell.h"
+#import "SODownloader+MusicDownloader.h"
 
 @interface SOMusicListViewController ()
 
@@ -22,17 +23,11 @@
     [super viewDidLoad];
     
     self.musicArray = [SOMusic allMusicList];
-    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-#pragma mark - Download action
-- (void)downloadMusic:(UIButton *)sender {
-    
 }
 
 #pragma mark - Table view data source
@@ -46,12 +41,42 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     SOMusic *music = self.musicArray[indexPath.row];
-    cell.titleLabel.text = music.title;
-    cell.stateLabel.text = @"未下载";
-    cell.downloadButton.tag = indexPath.row;
-    [cell.downloadButton addTarget:self action:@selector(downloadMusic:) forControlEvents:UIControlEventTouchUpInside];
+    [cell configureMusic:music];
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    SOMusic *music = self.musicArray[indexPath.row];
+    switch (music.downloadState) {
+        case SODownloadStateError:
+        {
+            [[SODownloader musicDownloader]resumeItem:music];
+        }
+            break;
+        case SODownloadStatePaused:
+        {
+            [[SODownloader musicDownloader]resumeItem:music];
+        }
+            break;
+        case SODownloadStateNormal:
+        {
+            [[SODownloader musicDownloader]downloadItem:music];
+        }
+            break;
+        case SODownloadStateLoading:
+        {
+            [[SODownloader musicDownloader]pauseItem:music];
+        }
+            break;
+        case SODownloadStateWait:
+        {
+            [[SODownloader musicDownloader]pauseItem:music];
+        }
+            break;
+        default:
+            break;
+    }
 }
 
 @end

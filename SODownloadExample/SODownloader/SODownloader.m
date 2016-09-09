@@ -94,6 +94,10 @@
 
 /// 暂停
 - (void)pauseItem:(id<SODownloadItem>)item {
+    [self _pauseItem:item isPauseAll:NO];
+}
+
+- (void)_pauseItem:(id<SODownloadItem>)item isPauseAll:(BOOL)isPauseAll {
     dispatch_sync(self.synchronizationQueue, ^{
         if (item.downloadState == SODownloadStateLoading || item.downloadState == SODownloadStateWait) {
             if (item.downloadState == SODownloadStateLoading) {
@@ -101,6 +105,9 @@
                 [downloadTask cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
                     [self saveResumeData:resumeData forItem:item];
                 }];
+                if (!isPauseAll) {
+                    [self startNextTaskIfNecessary];
+                }
             }
             item.downloadState = SODownloadStatePaused;
         }
@@ -109,14 +116,14 @@
 
 - (void)pauseAll {
     for (id<SODownloadItem>item in self.downloadArray) {
-        [self pauseItem:item];
+        [self _pauseItem:item isPauseAll:YES];
     }
 }
 
 /// 继续
 - (void)resumeItem:(id<SODownloadItem>)item {
     dispatch_sync(self.synchronizationQueue, ^{
-        if (item.downloadState == SODownloadStatePaused) {
+        if (item.downloadState == SODownloadStatePaused || item.downloadState == SODownloadStateError) {
             if ([self isActiveRequestCountBelowMaximumLimit]) {
                 [self startDownloadItem:item];
             } else {
@@ -277,12 +284,19 @@
 
 - (void)safelyStartNextTaskIfNecessary {
     dispatch_sync(self.synchronizationQueue, ^{
-        for (id<SODownloadItem>item in self.downloadArray) {
-            if (item.downloadState == SODownloadStateWait && [self isActiveRequestCountBelowMaximumLimit]) {
-                [self downloadItem:item];
+        [self safelyStartNextTaskIfNecessary];
+    });
+}
+
+- (void)startNextTaskIfNecessary {
+    for (id<SODownloadItem>item in self.downloadArray) {
+        if (item.downloadState == SODownloadStateWait && [self isActiveRequestCountBelowMaximumLimit]) {
+            [self startDownloadItem:item];
+            if (![self isActiveRequestCountBelowMaximumLimit]) {
+                break;
             }
         }
-    });
+    }
 }
 
 - (BOOL)isActiveRequestCountBelowMaximumLimit {

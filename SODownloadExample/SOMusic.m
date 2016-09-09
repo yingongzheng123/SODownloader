@@ -10,6 +10,7 @@
 #import "SODownloader.h"
 
 @implementation SOMusic
+@synthesize downloadProgress, downloadState;
 
 + (NSArray *)allMusicList {
     return @[
@@ -50,7 +51,8 @@
 }
 
 - (NSString *)downloadURL {
-    return [NSString stringWithFormat:@"http://o6lpg3g95.bkt.clouddn.com/%@.mp3", self.fileName];
+    NSString *urlString = [NSString stringWithFormat:@"http://o6lpg3g95.bkt.clouddn.com/%@.mp3", self.fileName];
+    return [NSURL URLWithString:urlString];
 }
 
 @end

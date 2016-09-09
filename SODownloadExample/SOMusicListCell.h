@@ -13,6 +13,10 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *stateLabel;
-@property (weak, nonatomic) IBOutlet UIButton *downloadButton;
+@property (weak, nonatomic) IBOutlet UILabel *progressLabel;
+
+@property (weak, nonatomic) SOMusic *music;
+
+- (void)configureMusic:(SOMusic *)music;
 
 @end
