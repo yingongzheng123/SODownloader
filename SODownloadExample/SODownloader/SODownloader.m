@@ -141,11 +141,18 @@
 
 /// 取消／删除
 - (void)cancelItem:(id<SODownloadItem>)item {
+    [self _cancelItem:item isAllCancelled:NO];
+}
+
+- (void)_cancelItem:(id<SODownloadItem>)item isAllCancelled:(BOOL)isAllCancelled {
     dispatch_sync(self.synchronizationQueue, ^{
         if (item.downloadState == SODownloadStateLoading || item.downloadState == SODownloadStateWait) {
             if (item.downloadState == SODownloadStateLoading) {
                 NSURLSessionDownloadTask *downloadTask = [self downloadTaskForItem:item];
                 [downloadTask cancel];
+                if (!isAllCancelled) {
+                    [self startNextTaskIfNecessary];
+                }
             }
             item.downloadState = SODownloadStateNormal;
             [self.downloadArray removeObject:item];
@@ -155,7 +162,7 @@
 
 - (void)cancenAll {
     for (id<SODownloadItem>item in self.downloadArray) {
-        [self cancelItem:item];
+        [self _cancelItem:item isAllCancelled:YES];
     }
 }
 
@@ -232,7 +239,12 @@
             __strong __typeof__(weakSelf) strongSelf = weakSelf;
             if (error) {
                 // TODO: 对下载失败进行处理，注意取消的情况（取消／删除）
-                item.downloadState = SODownloadStateError;
+                if (error.code != NSURLErrorCancelled) {
+                    item.downloadState = SODownloadStateError;
+                    
+                } else {
+                    SODebugLog(@"Error:%@", error);
+                }
             } else {
                 item.downloadState = SODownloadStateComplete;
                 [self.downloadArray removeObject:item];
