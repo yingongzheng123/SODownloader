@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Tab Bar Controller-->
@@ -143,9 +144,9 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="宝贝" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rsj-zU-x1q">
-                                            <rect key="frame" x="8" y="8" width="110" height="21"/>
+                                            <rect key="frame" x="8" y="8" width="359" height="21"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="110" id="pIx-V8-jDb"/>
+                                                <constraint firstAttribute="width" constant="359" id="pIx-V8-jDb"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -157,18 +158,16 @@
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RDs-Ua-mUZ">
-                                            <rect key="frame" x="126" y="8" width="42" height="21"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
+                                        <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Auh-FZ-kzi">
+                                            <rect key="frame" x="67" y="46" width="300" height="2"/>
+                                        </progressView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="RDs-Ua-mUZ" firstAttribute="leading" secondItem="Rsj-zU-x1q" secondAttribute="trailing" constant="8" id="LGX-Rf-57E"/>
-                                        <constraint firstItem="RDs-Ua-mUZ" firstAttribute="top" secondItem="k6h-C5-brz" secondAttribute="top" constant="8" id="Sqz-Yp-gah"/>
+                                        <constraint firstItem="Auh-FZ-kzi" firstAttribute="trailing" secondItem="k6h-C5-brz" secondAttribute="trailingMargin" id="FXv-A7-Rhs"/>
+                                        <constraint firstItem="Auh-FZ-kzi" firstAttribute="centerY" secondItem="mUl-ZM-7Zj" secondAttribute="centerY" id="Tcm-Uy-kOX"/>
                                         <constraint firstItem="mUl-ZM-7Zj" firstAttribute="top" secondItem="Rsj-zU-x1q" secondAttribute="bottom" constant="7" id="Whf-en-hIn"/>
                                         <constraint firstAttribute="bottom" secondItem="mUl-ZM-7Zj" secondAttribute="bottom" constant="8" id="aDB-Cu-g3G"/>
+                                        <constraint firstItem="Auh-FZ-kzi" firstAttribute="leading" secondItem="k6h-C5-brz" secondAttribute="leading" constant="67" id="d3y-Xr-tH8"/>
                                         <constraint firstItem="mUl-ZM-7Zj" firstAttribute="leading" secondItem="k6h-C5-brz" secondAttribute="leading" constant="8" id="jHa-SN-qRd"/>
                                         <constraint firstItem="Rsj-zU-x1q" firstAttribute="top" secondItem="k6h-C5-brz" secondAttribute="top" constant="8" id="oIf-Gu-pYR"/>
                                         <constraint firstItem="Rsj-zU-x1q" firstAttribute="leading" secondItem="k6h-C5-brz" secondAttribute="leading" constant="8" id="w6k-M3-dBf"/>
@@ -180,7 +179,7 @@
                                     </variation>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="progressLabel" destination="RDs-Ua-mUZ" id="QOi-tf-uEp"/>
+                                    <outlet property="progressView" destination="Auh-FZ-kzi" id="xvE-KS-G39"/>
                                     <outlet property="stateLabel" destination="mUl-ZM-7Zj" id="MYg-pd-cCZ"/>
                                     <outlet property="titleLabel" destination="Rsj-zU-x1q" id="vI9-qi-UvI"/>
                                 </connections>
@@ -191,7 +190,13 @@
                             <outlet property="delegate" destination="brD-90-eQx" id="kHZ-tN-8Gi"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="热门曲目" id="AfM-lh-EHJ"/>
+                    <navigationItem key="navigationItem" title="热门曲目" id="AfM-lh-EHJ">
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="zdw-Rv-Viy">
+                            <connections>
+                                <action selector="showActions:" destination="brD-90-eQx" id="8s1-55-caa"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dS7-3z-mdU" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -2,7 +2,7 @@
 //  SODownloader.h
 //  SODownloadExample
 //
-//  Created by xueyi on 16/5/3.
+//  Created by scfhao on 16/5/3.
 //  Copyright © 2016年 http://scfhao.coding.me. All rights reserved.
 //
 
@@ -32,7 +32,7 @@ typedef void(^SODownloadCompleteBlock_t)(id<SODownloadItem> item, NSURL *locatio
 @property (nonatomic, assign) NSInteger maximumActiveDownloads;
 
 #pragma mark - 创建
-- (instancetype)initWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock;
++ (instancetype)downloaderWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock;
 
 // 下载管理
 /// 下载
@@ -50,6 +50,9 @@ typedef void(^SODownloadCompleteBlock_t)(id<SODownloadItem> item, NSURL *locatio
 
 // 状态管理
 - (void)setDownloadState:(SODownloadState)state forItem:(id<SODownloadItem>)item;
+
+#pragma mark - 后台下载支持
+- (void)setDidFinishEventsForBackgroundURLSessionBlock:(void (^)(NSURLSession *session))block;
 
 @end
 

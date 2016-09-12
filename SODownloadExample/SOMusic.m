@@ -2,57 +2,59 @@
 //  SOMusic.m
 //  SODownloadExample
 //
-//  Created by xueyi on 16/5/3.
+//  Created by scfhao on 16/5/3.
 //  Copyright © 2016年 http://scfhao.coding.me. All rights reserved.
 //
 
 #import "SOMusic.h"
 #import "SODownloader.h"
 
+@interface SOMusic ()
+
+@property (strong, nonatomic) NSString *urlString;
+
+@end
+
 @implementation SOMusic
 @synthesize downloadProgress, downloadState;
 
 + (NSArray *)allMusicList {
     return @[
-        [SOMusic musicWithTitle:@"暧昧" fileName:@"AiMei"],
-        [SOMusic musicWithTitle:@"百年孤寂" fileName:@"BaiNianGuJi"],
-        [SOMusic musicWithTitle:@"不爱我的我不爱" fileName:@"BuAiWoDeWoBuAi"],
-        [SOMusic musicWithTitle:@"不留" fileName:@"BuLiu"],
-        [SOMusic musicWithTitle:@"传奇" fileName:@"ChuanQi"],
-        [SOMusic musicWithTitle:@"催眠" fileName:@"CuiMian"],
-        [SOMusic musicWithTitle:@"Di Dar" fileName:@"DiDar"],
-        [SOMusic musicWithTitle:@"蝴蝶" fileName:@"HuDie"],
-        [SOMusic musicWithTitle:@"花事了" fileName:@"HuaShiLiao"],
-        [SOMusic musicWithTitle:@"流年" fileName:@"LiuNian"],
-        [SOMusic musicWithTitle:@"闷" fileName:@"Meng"],
-        [SOMusic musicWithTitle:@"迷魂记" fileName:@"MiHongJi"],
-        [SOMusic musicWithTitle:@"那些花儿" fileName:@"NaXieHuaEr"],
-        [SOMusic musicWithTitle:@"棋子" fileName:@"QiZi"],
-        [SOMusic musicWithTitle:@"人间" fileName:@"RenJian"],
-        [SOMusic musicWithTitle:@"容易受伤的女人" fileName:@"RongYiShouShangDeNvRen"],
-        [SOMusic musicWithTitle:@"誓言" fileName:@"ShiYan"],
-        [SOMusic musicWithTitle:@"天与地" fileName:@"TianYuDi"],
-        [SOMusic musicWithTitle:@"笑忘书" fileName:@"XiaoWangShu"],
-        [SOMusic musicWithTitle:@"旋木" fileName:@"XuanMu"]
+        [SOMusic musicWithTitle:@"QQ for Mac" urlString:@"http://dldir1.qq.com/qqfile/QQforMac/QQ_V5.1.1.dmg"],
+        [SOMusic musicWithTitle:@"Layout and Animation Techniques for WatchKit" urlString:@"http://devstreaming.apple.com/videos/wwdc/2015/216isrjt4ku9w4/216/216_sd_layout_and_animation_techniques_for_watchkit.mp4?dl=1"],
+        [SOMusic musicWithTitle:@"Advanced NSOperations" urlString:@"http://devstreaming.apple.com/videos/wwdc/2015/2267p2ni281ba/226/226_sd_advanced_nsoperations.mp4?dl=1"],
+        [SOMusic musicWithTitle:@"Building Document Based Apps" urlString:@"http://devstreaming.apple.com/videos/wwdc/2015/234reaz1byqc/234/234_sd_building_document_based_apps.mp4?dl=1"],
+        [SOMusic musicWithTitle:@"Creating Complications with CloukKit" urlString:@"http://devstreaming.apple.com/videos/wwdc/2015/209c9277tttlt9/209/209_sd_creating_complications_with_clockkit.mp4?dl=1"],
+        [SOMusic musicWithTitle:@"Apple Watch Accessibility" urlString:@"http://devstreaming.apple.com/videos/wwdc/2015/2048w4vdjhe1i1m/204/204_sd_apple_watch_accessibility.mp4?dl=1"],
+        [SOMusic musicWithTitle:@"Networking with NSURLSession" urlString:@"http://devstreaming.apple.com/videos/wwdc/2015/711y6zlz0ll/711/711_sd_networking_with_nsurlsession.mp4?dl=1"],
+        [SOMusic musicWithTitle:@"What's New in Web Development in WebKit and Safari" urlString:@"http://devstreaming.apple.com/videos/wwdc/2015/501g8vwlgg2/501/501_sd_whats_new_in_web_development_in_webkit_and_safari.mp4?dl=1"],
+        [SOMusic musicWithTitle:@"Supporting the Enterprise with OS X Automation" urlString:@"http://devstreaming.apple.com/videos/wwdc/2015/306vjwcqnm/306/306_sd_supporting_the_enterprise_with_os_x_automation.mp4?dl=1"],
+        [SOMusic musicWithTitle:@"What's New in MapKit" urlString:@"http://devstreaming.apple.com/videos/wwdc/2015/206v5ce46maax7s/206/206_sd_whats_new_in_mapkit.mp4?dl=1"],
+        [SOMusic musicWithTitle:@"Optimizing Your App for Multitasking on iPad in iOS 9" urlString:@"http://devstreaming.apple.com/videos/wwdc/2015/212mm5ra3oau66/212/212_sd_optimizing_your_app_for_multitasking_on_ipad_in_ios_9.mp4?dl=1"],
+        [SOMusic musicWithTitle:@"Introducing GameplayKit" urlString:@"http://devstreaming.apple.com/videos/wwdc/2015/608rpwq1ltvg5nmk/608/608_sd_introducing_gameplaykit.mp4?dl=1"],
+        [SOMusic musicWithTitle:@"What's New in UIKit Dynamics and Visual Effects" urlString:@"http://devstreaming.apple.com/videos/wwdc/2015/229fksrj39nd/229/229_sd_whats_new_in_uikit_dynamics_and_visual_effects.mp4?dl=1"]
     ];
 }
 
-+ (instancetype)musicWithTitle:(NSString *)title fileName:(NSString *)fileName {
-    return [[self alloc]initWithTitle:title fileName:fileName];
++ (instancetype)musicWithTitle:(NSString *)title urlString:(NSString *)urlString {
+    return [[self alloc]initWithTitle:title urlString:urlString];
 }
 
-- (instancetype)initWithTitle:(NSString *)title fileName:(NSString *)fileName {
+- (instancetype)initWithTitle:(NSString *)title urlString:(NSString *)urlString {
     self = [super init];
     if (self) {
         self.title = title;
-        self.fileName = fileName;
+        self.urlString = urlString;
     }
     return self;
 }
 
-- (NSString *)downloadURL {
-    NSString *urlString = [NSString stringWithFormat:@"http://o6lpg3g95.bkt.clouddn.com/%@.mp3", self.fileName];
-    return [NSURL URLWithString:urlString];
+- (NSURL *)downloadURL {
+    return [NSURL URLWithString:self.urlString];
+}
+
+- (NSString *)description {
+    return self.title;
 }
 
 @end

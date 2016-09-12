@@ -19,7 +19,6 @@
 @property (nonatomic, strong) NSMutableArray *downloadArray;
 @property (nonatomic, strong) NSMutableArray *completeArray;
 
-
 @property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
 @property (nonatomic, strong) dispatch_queue_t synchronizationQueue;
 @property (nonatomic, strong) dispatch_queue_t responseQueue;
@@ -44,6 +43,15 @@
 
 @implementation SODownloader
 
++ (NSCache *)downloaderCache {
+    static NSCache *downloaderCache = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        downloaderCache = [[NSCache alloc]init];
+    });
+    return downloaderCache;
+}
+
 - (instancetype)initWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock {
     self = [super init];
     if (self) {
@@ -53,12 +61,12 @@
         queueLabel = [NSString stringWithFormat:@"cn.scfhao.downloader.responseQueue-%@", [NSUUID UUID].UUIDString];
         self.responseQueue = dispatch_queue_create([queueLabel UTF8String], DISPATCH_QUEUE_CONCURRENT);
         
-        NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:identifier];
         self.sessionManager = [[AFHTTPSessionManager alloc]initWithSessionConfiguration:sessionConfiguration];
         
         self.downloaderIdentifier = identifier;
         self.completeBlock = completeBlock;
-        self.maximumActiveDownloads = 1;
+        self.maximumActiveDownloads = 3;
         self.downloaderPath = [NSTemporaryDirectory() stringByAppendingPathComponent:self.downloaderIdentifier];
         
         self.tasks = [[NSMutableDictionary alloc]init];
@@ -70,11 +78,22 @@
     return self;
 }
 
++ (instancetype)downloaderWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock {
+    SODownloader *downloader = [[self downloaderCache]objectForKey:identifier];
+    if (!downloader) {
+        downloader = [[[self class]alloc]initWithIdentifier:identifier completeBlock:completeBlock];
+        [[self downloaderCache]setObject:downloader forKey:identifier];
+    }
+    return downloader;
+}
+
 #pragma mark - Public APIs - Download Control
 // 下载管理
 /// 下载
 - (void)downloadItem:(id<SODownloadItem>)item {
-    NSAssert(item.downloadState == SODownloadStateNormal, @"SODownloader只下载Normal状态的item");
+    if (item.downloadState != SODownloadStateNormal) {
+        SOWarnLog(@"SODownloader只下载Normal状态的item");
+    }
     dispatch_sync(self.synchronizationQueue, ^{
         if (item.downloadState == SODownloadStateNormal) {
             [self.downloadArray addObject:item];
@@ -154,7 +173,11 @@
                     [self startNextTaskIfNecessary];
                 }
             }
-            item.downloadState = SODownloadStateNormal;
+        }
+        item.downloadState = SODownloadStateNormal;
+        [self removeTempDataForItem:item];
+        item.downloadProgress = 0;
+        if (!isAllCancelled) {
             [self.downloadArray removeObject:item];
         }
     });
@@ -164,6 +187,7 @@
     for (id<SODownloadItem>item in self.downloadArray) {
         [self _cancelItem:item isAllCancelled:YES];
     }
+    [self.downloadArray removeAllObjects];
 }
 
 - (void)setDownloadState:(SODownloadState)state forItem:(id<SODownloadItem>)item {
@@ -227,7 +251,6 @@
     if (!request) {
         NSError *URLError = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
         SOErrorLog(@"SODownload fail %@", URLError);
-        // TODO: 下载失败进行处理
         item.downloadState = SODownloadStateError;
         return;
     }
@@ -238,12 +261,10 @@
         dispatch_async(self.responseQueue, ^{
             __strong __typeof__(weakSelf) strongSelf = weakSelf;
             if (error) {
-                // TODO: 对下载失败进行处理，注意取消的情况（取消／删除）
+                SODebugLog(@"Error:%@", error);
                 if (error.code != NSURLErrorCancelled) {
                     item.downloadState = SODownloadStateError;
-                    
-                } else {
-                    SODebugLog(@"Error:%@", error);
+                    [self removeTempDataForItem:item];
                 }
             } else {
                 item.downloadState = SODownloadStateComplete;
@@ -257,6 +278,7 @@
         });
     };
     void (^progressBlock)(NSProgress *downloadProgress) = ^(NSProgress *downloadProgress) {
+        SODebugLog(@"%@ %.2f", item, downloadProgress.fractionCompleted);
         item.downloadProgress = downloadProgress.fractionCompleted;
     };
     // 创建task
@@ -292,15 +314,17 @@
             self.activeRequestCount -= 1;
         }
     });
+    [self log4ActiveCountByTag:@"下载数-1"];
 }
 
 - (void)safelyStartNextTaskIfNecessary {
     dispatch_sync(self.synchronizationQueue, ^{
-        [self safelyStartNextTaskIfNecessary];
+        [self startNextTaskIfNecessary];
     });
 }
 
 - (void)startNextTaskIfNecessary {
+    [self log4ActiveCountByTag:@"开始下一个"];
     for (id<SODownloadItem>item in self.downloadArray) {
         if (item.downloadState == SODownloadStateWait && [self isActiveRequestCountBelowMaximumLimit]) {
             [self startDownloadItem:item];
@@ -319,6 +343,15 @@
     dispatch_sync(self.synchronizationQueue, ^{
         _maximumActiveDownloads = maximumActiveDownloads;
     });
+}
+
+- (void)log4ActiveCountByTag:(NSString *)tag {
+    SODebugLog(@"%@ 当前下载数：%@", tag, @(self.activeRequestCount).stringValue);
+}
+
+#pragma mark - 后台下载支持
+- (void)setDidFinishEventsForBackgroundURLSessionBlock:(void (^)(NSURLSession *session))block {
+    [self.sessionManager setDidFinishEventsForBackgroundURLSessionBlock:block];
 }
 
 @end
@@ -340,7 +373,9 @@
 
 - (NSString *)tempPathForItem:(id<SODownloadItem>)item {
     NSAssert([item downloadURL] != nil, @"SODownloader needs downloadURL for download item!");
-    return [[self.downloaderPath stringByAppendingPathComponent:[self pathForDownloadURL:[item downloadURL]]]stringByAppendingPathExtension:@"download"];
+    NSString *tempFileName = [self pathForDownloadURL:[item downloadURL]];
+//    NSString *tempFileName = [[self pathForDownloadURL:[item downloadURL]]stringByAppendingPathExtension:@"download"];
+    return [self.downloaderPath stringByAppendingPathComponent:tempFileName];
 }
 
 - (void)removeTempDataForItem:(id<SODownloadItem>)item {
@@ -363,12 +398,12 @@
 - (NSString *)pathForDownloadURL:(NSURL *)url {
     NSData *data = [[url absoluteString] dataUsingEncoding:NSUTF8StringEncoding];
     uint8_t digest[CC_MD5_DIGEST_LENGTH];
-    CC_SHA1(data.bytes, (CC_LONG)data.length, digest);
+    CC_MD5(data.bytes, (CC_LONG)data.length, digest);
     NSMutableString *output = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
     for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++) {
         [output appendFormat:@"%02x", digest[i]];
     }
-    return output;
+    return [output copy];
 }
 
 @end

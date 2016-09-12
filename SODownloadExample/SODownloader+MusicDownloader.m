@@ -7,6 +7,7 @@
 //
 
 #import "SODownloader+MusicDownloader.h"
+#import "SOLog.h"
 
 @implementation SODownloader (MusicDownloader)
 
@@ -14,8 +15,8 @@
     static SODownloader *downloader = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        downloader = [[SODownloader alloc]initWithIdentifier:@"music" completeBlock:^(id<SODownloadItem>  _Nonnull item, NSURL * _Nonnull location) {
-            
+        downloader = [SODownloader downloaderWithIdentifier:@"music" completeBlock:^(id<SODownloadItem>  _Nonnull item, NSURL * _Nonnull location) {
+            SODebugLog(@"Download %@ complete!", item);
         }];
     });
     return downloader;

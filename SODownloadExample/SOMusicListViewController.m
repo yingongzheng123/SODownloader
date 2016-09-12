@@ -13,7 +13,7 @@
 
 @interface SOMusicListViewController ()
 
-@property (strong, nonatomic) NSArray *musicArray;
+@property (strong, nonatomic) NSArray<SODownloadItem> *musicArray;
 
 @end
 
@@ -21,7 +21,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.musicArray = [SOMusic allMusicList];
 }
 
@@ -78,5 +77,23 @@
             break;
     }
 }
+
+- (IBAction)showActions:(id)sender {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:@"请选择操作" preferredStyle:UIAlertControllerStyleActionSheet];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"全部下载" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[SODownloader musicDownloader]downloadItems:self.musicArray];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"全部暂停" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[SODownloader musicDownloader]pauseAll];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"全部开始" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[SODownloader musicDownloader]resumeAll];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"全部取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[SODownloader musicDownloader]cancenAll];
+    }]];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
 
 @end

@@ -21,7 +21,7 @@ static void * kProgressContext = &kProgressContext;
 - (void)configureMusic:(SOMusic *)music {
     self.titleLabel.text = music.title;
     [self updateState:music.downloadState];
-    self.progressLabel.text = [NSString stringWithFormat:@"%.2f%%", music.downloadProgress * 100];
+    self.progressView.progress = music.downloadProgress;
     self.music = music;
 }
 
@@ -69,7 +69,7 @@ static void * kProgressContext = &kProgressContext;
     } else if (context == kProgressContext) {
         double newProgress = [change[NSKeyValueChangeNewKey]doubleValue];
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.progressLabel.text = [NSString stringWithFormat:@"%.2f%%", newProgress * 100];
+            self.progressView.progress = newProgress;
         });
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

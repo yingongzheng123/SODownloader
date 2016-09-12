@@ -17,6 +17,7 @@
 		09B85BB21CD8E85400FE4D7E /* SOMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B85BB11CD8E85400FE4D7E /* SOMusic.m */; };
 		6D65B6FE9D72C3A75D2CE299 /* libPods-SODownloadExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13C5B33B2BB92859BC6F0183 /* libPods-SODownloadExample.a */; };
 		D986CB601D82A9A300220F09 /* SODownloader+MusicDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = D986CB5F1D82A9A300220F09 /* SODownloader+MusicDownloader.m */; };
+		D997B8A01D867C0E007482A9 /* AppDelegate+SODownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = D997B89F1D867C0E007482A9 /* AppDelegate+SODownloader.m */; };
 		D9A084251D1797DD0093955A /* SOMusicListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A084241D1797DD0093955A /* SOMusicListViewController.m */; };
 		D9A084281D17981F0093955A /* SOMusicListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A084271D17981F0093955A /* SOMusicListCell.m */; };
 		D9AF5C9D1D266ECC00A22593 /* SODownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9AF5C9C1D266ECC00A22593 /* SODownloadViewController.m */; };
@@ -46,6 +47,8 @@
 		D986CB5D1D825FEB00220F09 /* SOLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOLog.h; sourceTree = "<group>"; };
 		D986CB5E1D82A9A300220F09 /* SODownloader+MusicDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SODownloader+MusicDownloader.h"; sourceTree = "<group>"; };
 		D986CB5F1D82A9A300220F09 /* SODownloader+MusicDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SODownloader+MusicDownloader.m"; sourceTree = "<group>"; };
+		D997B89E1D867C0E007482A9 /* AppDelegate+SODownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+SODownloader.h"; sourceTree = "<group>"; };
+		D997B89F1D867C0E007482A9 /* AppDelegate+SODownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+SODownloader.m"; sourceTree = "<group>"; };
 		D9A084231D1797DD0093955A /* SOMusicListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOMusicListViewController.h; sourceTree = "<group>"; };
 		D9A084241D1797DD0093955A /* SOMusicListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOMusicListViewController.m; sourceTree = "<group>"; };
 		D9A084261D17981F0093955A /* SOMusicListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOMusicListCell.h; sourceTree = "<group>"; };
@@ -123,6 +126,8 @@
 				09B85BAB1CD8CD5F00FE4D7E /* SODownloader.m */,
 				09B85BAD1CD8CD6E00FE4D7E /* SODownloadItem.h */,
 				09B85BAE1CD8CD6E00FE4D7E /* SODownloadItem.m */,
+				D997B89E1D867C0E007482A9 /* AppDelegate+SODownloader.h */,
+				D997B89F1D867C0E007482A9 /* AppDelegate+SODownloader.m */,
 				D986CB5C1D82554100220F09 /* SODownloader设计.md */,
 			);
 			path = SODownloader;
@@ -226,6 +231,7 @@
 				TargetAttributes = {
 					09B85B8E1CD8CD1B00FE4D7E = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = 5N5785R8FU;
 					};
 				};
 			};
@@ -316,6 +322,7 @@
 				09B85BAF1CD8CD6E00FE4D7E /* SODownloadItem.m in Sources */,
 				09B85B971CD8CD1B00FE4D7E /* AppDelegate.m in Sources */,
 				09B85BB21CD8E85400FE4D7E /* SOMusic.m in Sources */,
+				D997B8A01D867C0E007482A9 /* AppDelegate+SODownloader.m in Sources */,
 				D9AF5CA61D26709200A22593 /* SOLoadingMusicCell.m in Sources */,
 				D9AF5C9D1D266ECC00A22593 /* SODownloadViewController.m in Sources */,
 				09B85BAC1CD8CD5F00FE4D7E /* SODownloader.m in Sources */,
@@ -439,6 +446,7 @@
 			baseConfigurationReference = 0FD10F8ECCB4AF0D3775C09B /* Pods-SODownloadExample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = SODownloadExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.scfhao.SODownloadExample;
@@ -451,6 +459,7 @@
 			baseConfigurationReference = E0DB6CB621DCCF438BC0A510 /* Pods-SODownloadExample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = SODownloadExample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = cn.scfhao.SODownloadExample;

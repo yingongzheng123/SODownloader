@@ -7,11 +7,33 @@
 //
 
 #import "AppDelegate.h"
+#import "SOLog.h"
 
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
+
+- (void)applicationDidFinishLaunching:(UIApplication *)application {
+    SODebugLog(@"%@", NSStringFromSelector(_cmd));
+}
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    SODebugLog(@"%@", NSStringFromSelector(_cmd));
+    return YES;
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    SODebugLog(@"%@", NSStringFromSelector(_cmd));
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    SODebugLog(@"%@", NSStringFromSelector(_cmd));
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    SODebugLog(@"%@", NSStringFromSelector(_cmd));
+}
 
 @end
