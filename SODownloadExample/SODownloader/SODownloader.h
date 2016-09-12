@@ -26,10 +26,14 @@ typedef void(^SODownloadCompleteBlock_t)(id<SODownloadItem> item, NSURL *locatio
  */
 @interface SODownloader : NSObject
 
-/// 每个下载器都有一个唯一标识符
+/// 每个下载器都有一个唯一标识符，不同的下载器应使用不同的标识符
 @property (nonatomic, copy) NSString *downloaderIdentifier;
 /// 最大下载数
 @property (nonatomic, assign) NSInteger maximumActiveDownloads;
+/// 等待、下载中、暂停状态的下载项数组
+@property (nonatomic, strong, readonly) NSMutableArray *downloadArray;
+/// 已下载项数组
+@property (nonatomic, strong, readonly) NSMutableArray *completeArray;
 
 #pragma mark - 创建
 + (instancetype)downloaderWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock;
@@ -51,9 +55,14 @@ typedef void(^SODownloadCompleteBlock_t)(id<SODownloadItem> item, NSURL *locatio
 // 状态管理
 - (void)setDownloadState:(SODownloadState)state forItem:(id<SODownloadItem>)item;
 
+/// 删除所有已下载
+- (void)removeAllCompletedItems;
+
 #pragma mark - 后台下载支持
 - (void)setDidFinishEventsForBackgroundURLSessionBlock:(void (^)(NSURLSession *session))block;
 
 @end
+
+FOUNDATION_EXTERN NSString const * SODownloaderCompleteItemNotification;
 
 NS_ASSUME_NONNULL_END

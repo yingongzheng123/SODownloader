@@ -10,6 +10,8 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "SOLog.h"
 
+NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteItemNotification";
+
 @interface SODownloader ()
 
 /// 当前下载数
@@ -34,10 +36,16 @@
 @interface SODownloader (DownloadPath)
 
 - (void)createPath;
-- (NSString *)tempPathForItem:(id<SODownloadItem>)item;
 - (void)saveResumeData:(NSData *)resumeData forItem:(id<SODownloadItem>)item;
 - (void)removeTempDataForItem:(id<SODownloadItem>)item;
 - (NSData *)tempDataForItem:(id<SODownloadItem>)item;
+
+@end
+
+@interface SODownloader (DownloadNotify)
+
+- (void)notifyDownloadItem:(id<SODownloadItem>)item withDownloadProgress:(double)downloadProgress;
+- (void)notifyDownloadItem:(id<SODownloadItem>)item withDownloadState:(SODownloadState)downloadState;
 
 @end
 
@@ -97,7 +105,7 @@
     dispatch_sync(self.synchronizationQueue, ^{
         if (item.downloadState == SODownloadStateNormal) {
             [self.downloadArray addObject:item];
-            item.downloadState = SODownloadStateWait;
+            [self notifyDownloadItem:item withDownloadState:SODownloadStateWait];
             if ([self isActiveRequestCountBelowMaximumLimit]) {
                 [self startDownloadItem:item];
             }
@@ -128,7 +136,7 @@
                     [self startNextTaskIfNecessary];
                 }
             }
-            item.downloadState = SODownloadStatePaused;
+            [self notifyDownloadItem:item withDownloadState:SODownloadStatePaused];
         }
     });
 }
@@ -146,7 +154,7 @@
             if ([self isActiveRequestCountBelowMaximumLimit]) {
                 [self startDownloadItem:item];
             } else {
-                item.downloadState = SODownloadStateWait;
+                [self notifyDownloadItem:item withDownloadState:SODownloadStateWait];
             }
         }
     });
@@ -174,10 +182,10 @@
                 }
             }
         }
-        item.downloadState = SODownloadStateNormal;
+        [self notifyDownloadItem:item withDownloadState:SODownloadStateNormal];
+        [self notifyDownloadItem:item withDownloadProgress:0];
         [self removeTempDataForItem:item];
-        item.downloadProgress = 0;
-        if (!isAllCancelled) {
+        if (!isAllCancelled && [self.downloadArray count]) {
             [self.downloadArray removeObject:item];
         }
     });
@@ -204,7 +212,7 @@
             if (item.downloadState == SODownloadStateNormal) {
                 [self downloadItem:item];
             } else if (item.downloadState == SODownloadStateError) {
-                item.downloadState = SODownloadStateWait;
+                [self notifyDownloadItem:item withDownloadState:SODownloadStateWait];
                 [self safelyStartNextTaskIfNecessary];
             }
         }
@@ -224,7 +232,7 @@
             if ([self.downloadArray containsObject:item]) {
                 [self cancelItem:item];
             }
-            item.downloadState = state;
+            [self notifyDownloadItem:item withDownloadState:SODownloadStateComplete];
             [self.completeArray addObject:item];
         }
             break;
@@ -236,10 +244,19 @@
     }
 }
 
+- (void)removeAllCompletedItems {
+    dispatch_sync(self.synchronizationQueue, ^{
+        for (id<SODownloadItem>item in self.completeArray) {
+            [self notifyDownloadItem:item withDownloadState:SODownloadStateNormal];
+        }
+        [self.completeArray removeAllObjects];
+    });
+}
+
 #pragma mark -
 /// 开始下载一个item，这个方法必须在同步线程中调用，且调用前必须先判断是否可以开始新的下载
 - (void)startDownloadItem:(id<SODownloadItem>)item {
-    item.downloadState = SODownloadStateLoading;
+    [self notifyDownloadItem:item withDownloadState:SODownloadStateLoading];
     NSString *URLIdentifier = [item.downloadURL absoluteString];
     
     NSURLSessionDownloadTask *existingDownloadTask = self.tasks[URLIdentifier];
@@ -251,7 +268,8 @@
     if (!request) {
         NSError *URLError = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
         SOErrorLog(@"SODownload fail %@", URLError);
-        item.downloadState = SODownloadStateError;
+        [self notifyDownloadItem:item withDownloadState:SODownloadStateError];
+        [self startNextTaskIfNecessary];
         return;
     }
     
@@ -263,14 +281,15 @@
             if (error) {
                 SODebugLog(@"Error:%@", error);
                 if (error.code != NSURLErrorCancelled) {
-                    item.downloadState = SODownloadStateError;
+                    [self notifyDownloadItem:item withDownloadState:SODownloadStateError];
                     [self removeTempDataForItem:item];
                 }
             } else {
-                item.downloadState = SODownloadStateComplete;
+                [self notifyDownloadItem:item withDownloadState:SODownloadStateComplete];
                 [self.downloadArray removeObject:item];
                 [self.completeArray addObject:item];
                 strongSelf.completeBlock ?: strongSelf.completeBlock(item, filePath);
+                [[NSNotificationCenter defaultCenter]postNotificationName:SODownloaderCompleteItemNotification object:item];
             }
             [strongSelf safelyRemoveTaskInfoForItem:item];
             [strongSelf safelyDecrementActiveTaskCount];
@@ -278,8 +297,7 @@
         });
     };
     void (^progressBlock)(NSProgress *downloadProgress) = ^(NSProgress *downloadProgress) {
-        SODebugLog(@"%@ %.2f", item, downloadProgress.fractionCompleted);
-        item.downloadProgress = downloadProgress.fractionCompleted;
+        [self notifyDownloadItem:item withDownloadProgress:downloadProgress.fractionCompleted];
     };
     // 创建task
     NSData *tempData = [self tempDataForItem:item];
@@ -373,8 +391,7 @@
 
 - (NSString *)tempPathForItem:(id<SODownloadItem>)item {
     NSAssert([item downloadURL] != nil, @"SODownloader needs downloadURL for download item!");
-    NSString *tempFileName = [self pathForDownloadURL:[item downloadURL]];
-//    NSString *tempFileName = [[self pathForDownloadURL:[item downloadURL]]stringByAppendingPathExtension:@"download"];
+    NSString *tempFileName = [[self pathForDownloadURL:[item downloadURL]]stringByAppendingPathExtension:@"download"];
     return [self.downloaderPath stringByAppendingPathComponent:tempFileName];
 }
 
@@ -404,6 +421,31 @@
         [output appendFormat:@"%02x", digest[i]];
     }
     return [output copy];
+}
+
+@end
+
+@implementation SODownloader (DownloadNotify)
+
+- (void)notifyDownloadItem:(id<SODownloadItem>)item withDownloadState:(SODownloadState)downloadState {
+    if ([item respondsToSelector:@selector(setDownloadState:)]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            item.downloadState = downloadState;
+        });
+    } else {
+        SOWarnLog(@"下载模型必须实现setDownloadState:才能获取到正确的下载状态！");
+    }
+}
+
+- (void)notifyDownloadItem:(id<SODownloadItem>)item withDownloadProgress:(double)downloadProgress {
+    SODebugLog(@"%@ %.2f", item, downloadProgress);
+    if ([item respondsToSelector:@selector(setDownloadProgress:)]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            item.downloadProgress = downloadProgress;
+        });
+    } else {
+        SOWarnLog(@"下载模型必须实现setDownloadProgress:才能获取到正确的下载进度！");
+    }
 }
 
 @end
