@@ -8,6 +8,7 @@
 
 #import "SOMusicListViewController.h"
 #import "SOMusic.h"
+#import "SOLog.h"
 #import "SOMusicListCell.h"
 #import "SODownloader+MusicDownloader.h"
 
@@ -29,6 +30,12 @@
     // Dispose of any resources that can be recreated.
 }
 
+/// 这样可以移除tableView上可见cell对music模型的kvo观察，不可见cell的移除kvo代码见tableView:didEndDisplayingCell:forRowAtIndexPath:方法。
+- (void)dealloc
+{
+    [self.tableView.visibleCells makeObjectsPerformSelector:@selector(configureMusic:) withObject:nil];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -36,12 +43,12 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    SOMusic *music = self.musicArray[indexPath.row];
+    
     SOMusicListCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([SOMusicListCell class]) forIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    SOMusic *music = self.musicArray[indexPath.row];
+
     [cell configureMusic:music];
-    
     return cell;
 }
 
@@ -78,6 +85,13 @@
     }
 }
 
+/// 实现这个代理方法是为了当一个cell在界面消失时，移除cell对music模型的kvo。
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    SOMusicListCell *musicCell = (SOMusicListCell *)cell;
+    [musicCell configureMusic:nil];
+}
+
+#pragma mark - Actions
 - (IBAction)showActions:(id)sender {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:@"请选择操作" preferredStyle:UIAlertControllerStyleActionSheet];
     [alertController addAction:[UIAlertAction actionWithTitle:@"全部下载" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

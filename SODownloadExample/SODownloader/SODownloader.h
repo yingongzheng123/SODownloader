@@ -6,7 +6,6 @@
 //  Copyright © 2016年 http://scfhao.coding.me. All rights reserved.
 //
 
-#import <AFHTTPSessionManager.h>
 #import "SODownloadItem.h"
 @protocol SODownloadItem;
 
@@ -27,18 +26,30 @@ typedef void(^SODownloadCompleteBlock_t)(id<SODownloadItem> item, NSURL *locatio
 @interface SODownloader : NSObject
 
 /// 每个下载器都有一个唯一标识符，不同的下载器应使用不同的标识符
-@property (nonatomic, copy) NSString *downloaderIdentifier;
+@property (nonatomic, copy, readonly) NSString *downloaderIdentifier;
 /// 最大下载数
 @property (nonatomic, assign) NSInteger maximumActiveDownloads;
 /// 等待、下载中、暂停状态的下载项数组
 @property (nonatomic, strong, readonly) NSMutableArray *downloadArray;
 /// 已下载项数组
 @property (nonatomic, strong, readonly) NSMutableArray *completeArray;
+/**
+ 下载文件接受类型
+ 此属性默认为nil，可接收任意类型的文件。
+ 可以为此属性设置一个可接收类型集合，当下载文件的response中的MIME-Type不符合时，SODownloader将判定其下载失败。
+ */
+@property (nonatomic, copy, nullable) NSSet <NSString *> *acceptableContentTypes;
 
-#pragma mark - 创建
+#pragma mark - 创建/初始化
+/**
+ 如果identifier对应的downloader已存在，则返回其对应的downloader，否则为该identifier创建一个downloader。
+ @return identifier对应的downloader
+ @param identifier 要获取的downloader的标识符，这个标识符还将被用于downloader临时文件路径名和urlSession的identifier。
+ @param completeBlock 完成回调，downloader每完成一个item时会调用此block，此block在非主线程中被调用，如果在block中进行UI操作，需要注意切换到主线程执行。另外也需要注意Block的循环引用问题。
+ */
 + (instancetype)downloaderWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock;
 
-// 下载管理
+#pragma mark - 下载管理
 /// 下载
 - (void)downloadItem:(id<SODownloadItem>)item;
 - (void)downloadItems:(NSArray<SODownloadItem>*)items;
@@ -63,6 +74,9 @@ typedef void(^SODownloadCompleteBlock_t)(id<SODownloadItem> item, NSURL *locatio
 
 @end
 
-FOUNDATION_EXTERN NSString const * SODownloaderCompleteItemNotification;
+/// SODownloader每完成下载一个item时，会发送此通知。这个通知的object为item对象，userInfo中包含了downloader对象。
+FOUNDATION_EXPORT NSString * const SODownloaderCompleteItemNotification;
+/// 在SODownloaderCompleteItemNotification通知中，可以通过此key在userInfo字典中拿到当前的downloader对象。
+FOUNDATION_EXPORT NSString * const SODownloaderCompleteDownloaderKey;
 
 NS_ASSUME_NONNULL_END

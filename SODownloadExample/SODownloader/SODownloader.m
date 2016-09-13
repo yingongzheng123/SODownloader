@@ -7,14 +7,19 @@
 //
 
 #import "SODownloader.h"
+#import <AFNetworking.h>
+#import "SODownloadResponseSerializer.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "SOLog.h"
 
-NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteItemNotification";
+NSString * const SODownloaderCompleteItemNotification = @"SODownloaderCompleteItemNotification";
+NSString * const SODownloaderCompleteDownloaderKey = @"SODownloaderKey";
 
 @interface SODownloader ()
 
-/// 当前下载数
+/// downloader identifier
+@property (nonatomic, copy) NSString *downloaderIdentifier;
+/// current download counts
 @property (nonatomic, assign) NSInteger activeRequestCount;
 
 @property (nonatomic, strong) NSMutableDictionary *tasks;
@@ -27,9 +32,10 @@ NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteIt
 
 // paths
 @property (nonatomic, strong) NSString *downloaderPath;
-
 // complete block
 @property (nonatomic, copy) SODownloadCompleteBlock_t completeBlock;
+
+- (BOOL)isControlDownloadFlowForItem:(id<SODownloadItem>)item;
 
 @end
 
@@ -60,6 +66,15 @@ NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteIt
     return downloaderCache;
 }
 
++ (instancetype)downloaderWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock {
+    SODownloader *downloader = [[self downloaderCache]objectForKey:identifier];
+    if (!downloader) {
+        downloader = [[[self class]alloc]initWithIdentifier:identifier completeBlock:completeBlock];
+        [[self downloaderCache]setObject:downloader forKey:identifier];
+    }
+    return downloader;
+}
+
 - (instancetype)initWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock {
     self = [super init];
     if (self) {
@@ -71,10 +86,11 @@ NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteIt
         
         NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:identifier];
         self.sessionManager = [[AFHTTPSessionManager alloc]initWithSessionConfiguration:sessionConfiguration];
+        self.sessionManager.responseSerializer = [SODownloadResponseSerializer serializer];
         
         self.downloaderIdentifier = identifier;
         self.completeBlock = completeBlock;
-        self.maximumActiveDownloads = 3;
+        self.maximumActiveDownloads = 1;
         self.downloaderPath = [NSTemporaryDirectory() stringByAppendingPathComponent:self.downloaderIdentifier];
         
         self.tasks = [[NSMutableDictionary alloc]init];
@@ -86,21 +102,16 @@ NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteIt
     return self;
 }
 
-+ (instancetype)downloaderWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock {
-    SODownloader *downloader = [[self downloaderCache]objectForKey:identifier];
-    if (!downloader) {
-        downloader = [[[self class]alloc]initWithIdentifier:identifier completeBlock:completeBlock];
-        [[self downloaderCache]setObject:downloader forKey:identifier];
-    }
-    return downloader;
-}
-
 #pragma mark - Public APIs - Download Control
-// 下载管理
 /// 下载
 - (void)downloadItem:(id<SODownloadItem>)item {
+    if ([self isControlDownloadFlowForItem:item]) {
+        SOWarnLog(@"SODownloader: %@ already in download flow!", item);
+        return;
+    }
     if (item.downloadState != SODownloadStateNormal) {
-        SOWarnLog(@"SODownloader只下载Normal状态的item");
+        SOWarnLog(@"SODownloader only download item in normal state: %@", item);
+        return;
     }
     dispatch_sync(self.synchronizationQueue, ^{
         if (item.downloadState == SODownloadStateNormal) {
@@ -121,6 +132,10 @@ NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteIt
 
 /// 暂停
 - (void)pauseItem:(id<SODownloadItem>)item {
+    if (![self isControlDownloadFlowForItem:item]) {
+        SOWarnLog(@"SODownloader: can't pause a item not in control of SODownloader!");
+        return;
+    }
     [self _pauseItem:item isPauseAll:NO];
 }
 
@@ -149,6 +164,10 @@ NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteIt
 
 /// 继续
 - (void)resumeItem:(id<SODownloadItem>)item {
+    if (![self isControlDownloadFlowForItem:item]) {
+        SOWarnLog(@"SODownloader: can't resume a item not in control of SODownloader!");
+        return;
+    }
     dispatch_sync(self.synchronizationQueue, ^{
         if (item.downloadState == SODownloadStatePaused || item.downloadState == SODownloadStateError) {
             if ([self isActiveRequestCountBelowMaximumLimit]) {
@@ -168,6 +187,10 @@ NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteIt
 
 /// 取消／删除
 - (void)cancelItem:(id<SODownloadItem>)item {
+    if (![self isControlDownloadFlowForItem:item]) {
+        SOWarnLog(@"SODownloader: can't cancel a item not in control of SODownloader!");
+        return;
+    }
     [self _cancelItem:item isAllCancelled:NO];
 }
 
@@ -237,7 +260,12 @@ NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteIt
         }
             break;
         case SODownloadStateError:
-            // 没这个必要
+            if ([self.downloadArray containsObject:item]) {
+                if (item.downloadState == SODownloadStateComplete) {
+                    [self notifyDownloadItem:item withDownloadState:SODownloadStateError];
+                    [self notifyDownloadItem:item withDownloadProgress:0];
+                }
+            }
             break;
         default:
             break;
@@ -254,6 +282,11 @@ NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteIt
 }
 
 #pragma mark -
+/// 判断item是否在当前的downloader的控制下，用于条件判断
+- (BOOL)isControlDownloadFlowForItem:(id<SODownloadItem>)item {
+    return [self.downloadArray containsObject:item];
+}
+
 /// 开始下载一个item，这个方法必须在同步线程中调用，且调用前必须先判断是否可以开始新的下载
 - (void)startDownloadItem:(id<SODownloadItem>)item {
     [self notifyDownloadItem:item withDownloadState:SODownloadStateLoading];
@@ -282,6 +315,7 @@ NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteIt
                 SODebugLog(@"Error:%@", error);
                 if (error.code != NSURLErrorCancelled) {
                     [self notifyDownloadItem:item withDownloadState:SODownloadStateError];
+                    [self notifyDownloadItem:item withDownloadProgress:0];
                     [self removeTempDataForItem:item];
                 }
             } else {
@@ -289,7 +323,9 @@ NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteIt
                 [self.downloadArray removeObject:item];
                 [self.completeArray addObject:item];
                 strongSelf.completeBlock ?: strongSelf.completeBlock(item, filePath);
-                [[NSNotificationCenter defaultCenter]postNotificationName:SODownloaderCompleteItemNotification object:item];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter]postNotificationName:SODownloaderCompleteItemNotification object:item userInfo:@{SODownloaderCompleteDownloaderKey: strongSelf}];
+                });
             }
             [strongSelf safelyRemoveTaskInfoForItem:item];
             [strongSelf safelyDecrementActiveTaskCount];
@@ -365,6 +401,14 @@ NSString const * SODownloaderCompleteItemNotification = @"SODownloaderCompleteIt
 
 - (void)log4ActiveCountByTag:(NSString *)tag {
     SODebugLog(@"%@ 当前下载数：%@", tag, @(self.activeRequestCount).stringValue);
+}
+
+- (void)setAcceptableContentTypes:(NSSet<NSString *> *)acceptableContentTypes {
+    [self.sessionManager.responseSerializer setAcceptableContentTypes:acceptableContentTypes];
+}
+
+- (NSSet<NSString *> *)acceptableContentTypes {
+    return self.sessionManager.responseSerializer.acceptableContentTypes;
 }
 
 #pragma mark - 后台下载支持

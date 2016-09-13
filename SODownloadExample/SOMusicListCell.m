@@ -13,16 +13,12 @@ static void * kProgressContext = &kProgressContext;
 
 @implementation SOMusicListCell
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    // Initialization code
-}
-
 - (void)configureMusic:(SOMusic *)music {
     self.titleLabel.text = music.title;
     [self updateState:music.downloadState];
     self.progressView.progress = music.downloadProgress;
     self.music = music;
+    self.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)updateState:(SODownloadState)state {
@@ -48,6 +44,10 @@ static void * kProgressContext = &kProgressContext;
     }
 }
 
+/**
+ 注意这个方法，当参数 music 为 nil 时，调用此方法可移除对之前设置的 music 的下载状态的观察。
+ 更多关于 UITableViewCell+KVO 需要注意的地方参考 SOMusicListViewController.m 文件。
+ */
 - (void)setMusic:(SOMusic *)music {
     if (_music) {
         [_music removeObserver:self forKeyPath:@__STRING(downloadState)];
@@ -63,14 +63,10 @@ static void * kProgressContext = &kProgressContext;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     if (context == kStateContext) {
         SODownloadState newState = [change[NSKeyValueChangeNewKey]integerValue];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self updateState:newState];
-        });
+        [self updateState:newState];
     } else if (context == kProgressContext) {
         double newProgress = [change[NSKeyValueChangeNewKey]doubleValue];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.progressView.progress = newProgress;
-        });
+        self.progressView.progress = newProgress;
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }

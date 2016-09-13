@@ -73,7 +73,7 @@
             </objects>
             <point key="canvasLocation" x="405.5" y="-605.5"/>
         </scene>
-        <!--Download View Controller-->
+        <!--已下载-->
         <scene sceneID="tsN-3g-QG2">
             <objects>
                 <tableViewController id="e7s-PA-T0o" customClass="SODownloadViewController" sceneMemberID="viewController">
@@ -96,12 +96,21 @@
                             <outlet property="delegate" destination="e7s-PA-T0o" id="VL4-84-Xw0"/>
                         </connections>
                     </tableView>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="已下载" id="pEL-ff-NhU">
+                        <barButtonItem key="rightBarButtonItem" systemItem="trash" id="hit-tu-4YZ">
+                            <connections>
+                                <action selector="clear:" destination="e7s-PA-T0o" id="gOm-Dn-kHX"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PT4-F9-MvZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="893.5" y="-312.5"/>
         </scene>
-        <!--热门曲目-->
+        <!--下载列表-->
         <scene sceneID="Aek-Wh-jaW">
             <objects>
                 <tableViewController id="brD-90-eQx" customClass="SOMusicListViewController" sceneMemberID="viewController">
@@ -164,7 +173,7 @@
                             <outlet property="delegate" destination="brD-90-eQx" id="kHZ-tN-8Gi"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="热门曲目" id="AfM-lh-EHJ">
+                    <navigationItem key="navigationItem" title="下载列表" id="AfM-lh-EHJ">
                         <barButtonItem key="rightBarButtonItem" systemItem="action" id="zdw-Rv-Viy">
                             <connections>
                                 <action selector="showActions:" destination="brD-90-eQx" id="8s1-55-caa"/>

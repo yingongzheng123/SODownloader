@@ -20,7 +20,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [[SODownloader musicDownloader].completeArray addObserver:self forKeyPath:@__STRING(completeArray) options:NSKeyValueObservingOptionNew context:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(dataChanged:) name:SODownloaderCompleteItemNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -28,13 +28,19 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
-    if ([keyPath isEqualToString:@__STRING(completeArray)]) {
-        SODebugLog(@"completeArray changed!");
-        [self.tableView reloadData];
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:SODownloaderCompleteItemNotification object:nil];
+}
+
+- (IBAction)clear:(id)sender {
+    [[SODownloader musicDownloader]removeAllCompletedItems];
+    [self.tableView reloadData];
+}
+
+- (void)dataChanged:(NSNotification *)notification {
+    SODebugLog(@"%@", [NSThread isMainThread] ? @"是在主线程": @"通知不在主线程");
+    [self.tableView reloadData];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

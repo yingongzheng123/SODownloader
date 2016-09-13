@@ -17,13 +17,11 @@
 		09B85BB21CD8E85400FE4D7E /* SOMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B85BB11CD8E85400FE4D7E /* SOMusic.m */; };
 		6D65B6FE9D72C3A75D2CE299 /* libPods-SODownloadExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13C5B33B2BB92859BC6F0183 /* libPods-SODownloadExample.a */; };
 		D986CB601D82A9A300220F09 /* SODownloader+MusicDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = D986CB5F1D82A9A300220F09 /* SODownloader+MusicDownloader.m */; };
+		D98EE68A1D87AF17002A02A8 /* SODownloadResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = D98EE6891D87AF17002A02A8 /* SODownloadResponseSerializer.m */; };
 		D997B8A01D867C0E007482A9 /* AppDelegate+SODownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = D997B89F1D867C0E007482A9 /* AppDelegate+SODownloader.m */; };
 		D9A084251D1797DD0093955A /* SOMusicListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A084241D1797DD0093955A /* SOMusicListViewController.m */; };
 		D9A084281D17981F0093955A /* SOMusicListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D9A084271D17981F0093955A /* SOMusicListCell.m */; };
 		D9AF5C9D1D266ECC00A22593 /* SODownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9AF5C9C1D266ECC00A22593 /* SODownloadViewController.m */; };
-		D9AF5CA31D26707D00A22593 /* SOLocalMusicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D9AF5CA21D26707D00A22593 /* SOLocalMusicCell.m */; };
-		D9AF5CA61D26709200A22593 /* SOLoadingMusicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D9AF5CA51D26709200A22593 /* SOLoadingMusicCell.m */; };
-		D9AF5CA91D26715900A22593 /* SOLocalStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D9AF5CA81D26715900A22593 /* SOLocalStore.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +45,8 @@
 		D986CB5D1D825FEB00220F09 /* SOLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOLog.h; sourceTree = "<group>"; };
 		D986CB5E1D82A9A300220F09 /* SODownloader+MusicDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SODownloader+MusicDownloader.h"; sourceTree = "<group>"; };
 		D986CB5F1D82A9A300220F09 /* SODownloader+MusicDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SODownloader+MusicDownloader.m"; sourceTree = "<group>"; };
+		D98EE6881D87AF17002A02A8 /* SODownloadResponseSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SODownloadResponseSerializer.h; sourceTree = "<group>"; };
+		D98EE6891D87AF17002A02A8 /* SODownloadResponseSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SODownloadResponseSerializer.m; sourceTree = "<group>"; };
 		D997B89E1D867C0E007482A9 /* AppDelegate+SODownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+SODownloader.h"; sourceTree = "<group>"; };
 		D997B89F1D867C0E007482A9 /* AppDelegate+SODownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+SODownloader.m"; sourceTree = "<group>"; };
 		D9A084231D1797DD0093955A /* SOMusicListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOMusicListViewController.h; sourceTree = "<group>"; };
@@ -55,12 +55,6 @@
 		D9A084271D17981F0093955A /* SOMusicListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOMusicListCell.m; sourceTree = "<group>"; };
 		D9AF5C9B1D266ECC00A22593 /* SODownloadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SODownloadViewController.h; sourceTree = "<group>"; };
 		D9AF5C9C1D266ECC00A22593 /* SODownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SODownloadViewController.m; sourceTree = "<group>"; };
-		D9AF5CA11D26707D00A22593 /* SOLocalMusicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOLocalMusicCell.h; sourceTree = "<group>"; };
-		D9AF5CA21D26707D00A22593 /* SOLocalMusicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOLocalMusicCell.m; sourceTree = "<group>"; };
-		D9AF5CA41D26709200A22593 /* SOLoadingMusicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOLoadingMusicCell.h; sourceTree = "<group>"; };
-		D9AF5CA51D26709200A22593 /* SOLoadingMusicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOLoadingMusicCell.m; sourceTree = "<group>"; };
-		D9AF5CA71D26715900A22593 /* SOLocalStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SOLocalStore.h; sourceTree = "<group>"; };
-		D9AF5CA81D26715900A22593 /* SOLocalStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SOLocalStore.m; sourceTree = "<group>"; };
 		E0DB6CB621DCCF438BC0A510 /* Pods-SODownloadExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SODownloadExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-SODownloadExample/Pods-SODownloadExample.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -128,6 +122,8 @@
 				09B85BAE1CD8CD6E00FE4D7E /* SODownloadItem.m */,
 				D997B89E1D867C0E007482A9 /* AppDelegate+SODownloader.h */,
 				D997B89F1D867C0E007482A9 /* AppDelegate+SODownloader.m */,
+				D98EE6881D87AF17002A02A8 /* SODownloadResponseSerializer.h */,
+				D98EE6891D87AF17002A02A8 /* SODownloadResponseSerializer.m */,
 				D986CB5C1D82554100220F09 /* SODownloader设计.md */,
 			);
 			path = SODownloader;
@@ -156,10 +152,6 @@
 			children = (
 				D9A084261D17981F0093955A /* SOMusicListCell.h */,
 				D9A084271D17981F0093955A /* SOMusicListCell.m */,
-				D9AF5CA11D26707D00A22593 /* SOLocalMusicCell.h */,
-				D9AF5CA21D26707D00A22593 /* SOLocalMusicCell.m */,
-				D9AF5CA41D26709200A22593 /* SOLoadingMusicCell.h */,
-				D9AF5CA51D26709200A22593 /* SOLoadingMusicCell.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -169,8 +161,6 @@
 			children = (
 				09B85BB01CD8E85400FE4D7E /* SOMusic.h */,
 				09B85BB11CD8E85400FE4D7E /* SOMusic.m */,
-				D9AF5CA71D26715900A22593 /* SOLocalStore.h */,
-				D9AF5CA81D26715900A22593 /* SOLocalStore.m */,
 				D986CB5E1D82A9A300220F09 /* SODownloader+MusicDownloader.h */,
 				D986CB5F1D82A9A300220F09 /* SODownloader+MusicDownloader.m */,
 			);
@@ -323,11 +313,9 @@
 				09B85B971CD8CD1B00FE4D7E /* AppDelegate.m in Sources */,
 				09B85BB21CD8E85400FE4D7E /* SOMusic.m in Sources */,
 				D997B8A01D867C0E007482A9 /* AppDelegate+SODownloader.m in Sources */,
-				D9AF5CA61D26709200A22593 /* SOLoadingMusicCell.m in Sources */,
+				D98EE68A1D87AF17002A02A8 /* SODownloadResponseSerializer.m in Sources */,
 				D9AF5C9D1D266ECC00A22593 /* SODownloadViewController.m in Sources */,
 				09B85BAC1CD8CD5F00FE4D7E /* SODownloader.m in Sources */,
-				D9AF5CA91D26715900A22593 /* SOLocalStore.m in Sources */,
-				D9AF5CA31D26707D00A22593 /* SOLocalMusicCell.m in Sources */,
 				D9A084251D1797DD0093955A /* SOMusicListViewController.m in Sources */,
 				D986CB601D82A9A300220F09 /* SODownloader+MusicDownloader.m in Sources */,
 				D9A084281D17981F0093955A /* SOMusicListCell.m in Sources */,
