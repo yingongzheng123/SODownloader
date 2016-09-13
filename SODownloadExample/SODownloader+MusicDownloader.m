@@ -12,14 +12,9 @@
 @implementation SODownloader (MusicDownloader)
 
 + (instancetype)musicDownloader {
-    static SODownloader *downloader = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        downloader = [SODownloader downloaderWithIdentifier:@"music" completeBlock:^(id<SODownloadItem>  _Nonnull item, NSURL * _Nonnull location) {
-            SODebugLog(@"Download %@ complete!", item);
-        }];
-    });
-    return downloader;
+    return [SODownloader downloaderWithIdentifier:@"music" completeBlock:^(id<SODownloadItem>  _Nonnull item, NSURL * _Nonnull location) {
+        SODebugLog(@"Download %@ complete!", item);
+    }];
 }
 
 @end
