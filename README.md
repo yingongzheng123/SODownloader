@@ -1,6 +1,6 @@
 #SODownloader
 
-简单几步，集成功能齐全的下载功能！
+简单几步，集成功能齐全的下载功能！关于 SODownloader 更详细的介绍可以参考[SODownloader介绍](http://scfhao.coding.me/2016/09/14/introduce-sodownloader.html)
 
 ## 使用步骤
 
