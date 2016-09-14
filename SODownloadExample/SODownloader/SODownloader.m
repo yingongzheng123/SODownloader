@@ -13,7 +13,7 @@
 #import "SOLog.h"
 
 NSString * const SODownloaderCompleteItemNotification = @"SODownloaderCompleteItemNotification";
-NSString * const SODownloaderCompleteDownloaderKey = @"SODownloaderKey";
+NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
 
 @interface SODownloader ()
 
@@ -324,7 +324,7 @@ NSString * const SODownloaderCompleteDownloaderKey = @"SODownloaderKey";
                 [self.completeArray addObject:item];
                 strongSelf.completeBlock ?: strongSelf.completeBlock(item, filePath);
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[NSNotificationCenter defaultCenter]postNotificationName:SODownloaderCompleteItemNotification object:item userInfo:@{SODownloaderCompleteDownloaderKey: strongSelf}];
+                    [[NSNotificationCenter defaultCenter]postNotificationName:SODownloaderCompleteItemNotification object:strongSelf userInfo:@{SODownloaderCompleteDownloadItemKey: item}];
                 });
             }
             [strongSelf safelyRemoveTaskInfoForItem:item];

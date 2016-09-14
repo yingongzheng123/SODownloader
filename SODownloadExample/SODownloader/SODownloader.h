@@ -50,7 +50,7 @@ typedef void(^SODownloadCompleteBlock_t)(id<SODownloadItem> item, NSURL *locatio
 + (instancetype)downloaderWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock;
 
 #pragma mark - 下载管理
-/// 下载
+/// 加入下载
 - (void)downloadItem:(id<SODownloadItem>)item;
 - (void)downloadItems:(NSArray<SODownloadItem>*)items;
 /// 暂停
@@ -74,9 +74,9 @@ typedef void(^SODownloadCompleteBlock_t)(id<SODownloadItem> item, NSURL *locatio
 
 @end
 
-/// SODownloader每完成下载一个item时，会发送此通知。这个通知的object为item对象，userInfo中包含了downloader对象。
+/// SODownloader每完成下载一个item时，会发送此通知。这个通知的object为downloader对象，userInfo中包含了item对象。
 FOUNDATION_EXPORT NSString * const SODownloaderCompleteItemNotification;
-/// 在SODownloaderCompleteItemNotification通知中，可以通过此key在userInfo字典中拿到当前的downloader对象。
-FOUNDATION_EXPORT NSString * const SODownloaderCompleteDownloaderKey;
+/// 在SODownloaderCompleteItemNotification通知中，可以通过此key在userInfo字典中拿到下载完成的item对象。
+FOUNDATION_EXPORT NSString * const SODownloaderCompleteDownloadItemKey;
 
 NS_ASSUME_NONNULL_END
