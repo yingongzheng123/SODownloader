@@ -220,6 +220,11 @@
 					09B85B8E1CD8CD1B00FE4D7E = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = 5N5785R8FU;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};

@@ -57,11 +57,11 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
 
 @implementation SODownloader
 
-+ (NSCache *)downloaderCache {
-    static NSCache *downloaderCache = nil;
++ (NSMutableDictionary *)downloaderCache {
+    static NSMutableDictionary *downloaderCache = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        downloaderCache = [[NSCache alloc]init];
+        downloaderCache = [[NSMutableDictionary alloc]init];
     });
     return downloaderCache;
 }
@@ -102,6 +102,11 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
     return self;
 }
 
+- (void)dealloc
+{
+    SODebugLog(@"dealloc");
+}
+
 #pragma mark - Public APIs - Download Control
 /// 下载
 - (void)downloadItem:(id<SODownloadItem>)item {
@@ -136,10 +141,6 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
         SOWarnLog(@"SODownloader: can't pause a item not in control of SODownloader!");
         return;
     }
-    [self _pauseItem:item isPauseAll:NO];
-}
-
-- (void)_pauseItem:(id<SODownloadItem>)item isPauseAll:(BOOL)isPauseAll {
     dispatch_sync(self.synchronizationQueue, ^{
         if (item.downloadState == SODownloadStateLoading || item.downloadState == SODownloadStateWait) {
             if (item.downloadState == SODownloadStateLoading) {
@@ -147,18 +148,16 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
                 [downloadTask cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
                     [self saveResumeData:resumeData forItem:item];
                 }];
-                if (!isPauseAll) {
-                    [self startNextTaskIfNecessary];
-                }
             }
             [self notifyDownloadItem:item withDownloadState:SODownloadStatePaused];
         }
     });
 }
 
+/// 暂停全部
 - (void)pauseAll {
     for (id<SODownloadItem>item in self.downloadArray) {
-        [self _pauseItem:item isPauseAll:YES];
+        [self pauseItem:item];
     }
 }
 
@@ -200,9 +199,6 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
             if (item.downloadState == SODownloadStateLoading) {
                 NSURLSessionDownloadTask *downloadTask = [self downloadTaskForItem:item];
                 [downloadTask cancel];
-                if (!isAllCancelled) {
-                    [self startNextTaskIfNecessary];
-                }
             }
         }
         [self notifyDownloadItem:item withDownloadState:SODownloadStateNormal];
@@ -276,17 +272,18 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
     dispatch_sync(self.synchronizationQueue, ^{
         for (id<SODownloadItem>item in self.completeArray) {
             [self notifyDownloadItem:item withDownloadState:SODownloadStateNormal];
+            [self notifyDownloadItem:item withDownloadProgress:0];
         }
         [self.completeArray removeAllObjects];
     });
 }
 
-#pragma mark -
 /// 判断item是否在当前的downloader的控制下，用于条件判断
 - (BOOL)isControlDownloadFlowForItem:(id<SODownloadItem>)item {
     return [self.downloadArray containsObject:item];
 }
 
+#pragma mark - 下载处理
 /// 开始下载一个item，这个方法必须在同步线程中调用，且调用前必须先判断是否可以开始新的下载
 - (void)startDownloadItem:(id<SODownloadItem>)item {
     [self notifyDownloadItem:item withDownloadState:SODownloadStateLoading];
@@ -309,19 +306,14 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
     __weak __typeof__(self) weakSelf = self;
     // 创建下载完成的回调
     void (^completeBlock)(NSURLResponse *response, NSURL *filePath, NSError *error) = ^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
-        dispatch_async(self.responseQueue, ^{
-            __strong __typeof__(weakSelf) strongSelf = weakSelf;
+        __strong __typeof__(weakSelf) strongSelf = weakSelf;
+        dispatch_async(strongSelf.responseQueue, ^{
             if (error) {
-                SODebugLog(@"Error:%@", error);
-                if (error.code != NSURLErrorCancelled) {
-                    [self notifyDownloadItem:item withDownloadState:SODownloadStateError];
-                    [self notifyDownloadItem:item withDownloadProgress:0];
-                    [self removeTempDataForItem:item];
-                }
+                [strongSelf handleError:error forItem:item];
             } else {
-                [self notifyDownloadItem:item withDownloadState:SODownloadStateComplete];
-                [self.downloadArray removeObject:item];
-                [self.completeArray addObject:item];
+                [strongSelf notifyDownloadItem:item withDownloadState:SODownloadStateComplete];
+                [strongSelf.downloadArray removeObject:item];
+                [strongSelf.completeArray addObject:item];
                 strongSelf.completeBlock ?: strongSelf.completeBlock(item, filePath);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter]postNotificationName:SODownloaderCompleteItemNotification object:strongSelf userInfo:@{SODownloaderCompleteDownloadItemKey: item}];
@@ -333,7 +325,8 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
         });
     };
     void (^progressBlock)(NSProgress *downloadProgress) = ^(NSProgress *downloadProgress) {
-        [self notifyDownloadItem:item withDownloadProgress:downloadProgress.fractionCompleted];
+        __strong __typeof__(weakSelf) strongSelf = weakSelf;
+        [strongSelf notifyDownloadItem:item withDownloadProgress:downloadProgress.fractionCompleted];
     };
     // 创建task
     NSData *tempData = [self tempDataForItem:item];
@@ -346,6 +339,43 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
     SODebugLog(@"启动下载（%li）%@", self.activeRequestCount, URLIdentifier);
 }
 
+- (void)handleError:(NSError *)error forItem:(id<SODownloadItem>)item {
+    // 取消的情况在task cancel方法时处理，所以这里只需处理非取消的情况。
+    SODebugLog(@"Error:%@", error);
+    BOOL handledError = NO;
+    if ([error.domain isEqualToString:NSURLErrorDomain]) {
+        // handle URL error
+        switch (error.code) {
+            case NSURLErrorCancelled:
+                // This case do nothing, because
+                handledError = YES;
+                break;
+            default:
+                break;
+        }
+    } else if ([error.domain isEqualToString:NSPOSIXErrorDomain]) {
+        switch (error.code) {
+            case 2: // can't found tmp file to resume
+                [self removeTempDataForItem:item];
+                [self notifyDownloadItem:item withDownloadProgress:0];
+                [self notifyDownloadItem:item withDownloadState:SODownloadStateWait];
+                handledError = YES;
+                break;
+            default:
+                break;
+        }
+    }
+    if (!handledError) {
+        // 如果有临时文件，保存文件
+        NSData *resumeData = error.userInfo[NSURLSessionDownloadTaskResumeData];
+        if (resumeData) {
+            [self saveResumeData:resumeData forItem:item];
+        }
+        [self notifyDownloadItem:item withDownloadState:SODownloadStateError];
+    }
+}
+
+#pragma mark - 同时下载数支持
 - (void)startDownloadTask:(NSURLSessionDownloadTask *)downloadTask forItem:(id<SODownloadItem>)item {
     self.tasks[[item.downloadURL absoluteString]] = downloadTask;
     [downloadTask resume];
@@ -396,6 +426,7 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
 - (void)setMaximumActiveDownloads:(NSInteger)maximumActiveDownloads {
     dispatch_sync(self.synchronizationQueue, ^{
         _maximumActiveDownloads = maximumActiveDownloads;
+        [self startNextTaskIfNecessary];
     });
 }
 

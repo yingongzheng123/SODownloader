@@ -15,11 +15,8 @@
 
 @implementation AppDelegate
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {
-    SODebugLog(@"%@", NSStringFromSelector(_cmd));
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    SODebugLog(@"%@", NSHomeDirectory());
     SODebugLog(@"%@", NSStringFromSelector(_cmd));
     return YES;
 }
