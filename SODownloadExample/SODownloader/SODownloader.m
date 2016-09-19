@@ -15,6 +15,11 @@
 NSString * const SODownloaderCompleteItemNotification = @"SODownloaderCompleteItemNotification";
 NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
 
+#ifndef AFNetworkingUseBlockToNotifyDownloadProgress
+static void * SODownloadProgressObserveContext = &SODownloadProgressObserveContext;
+static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgressUserInfoObjectKey";
+#endif
+
 @interface SODownloader ()
 
 /// downloader identifier
@@ -52,6 +57,10 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
 
 - (void)notifyDownloadItem:(id<SODownloadItem>)item withDownloadProgress:(double)downloadProgress;
 - (void)notifyDownloadItem:(id<SODownloadItem>)item withDownloadState:(SODownloadState)downloadState;
+#ifndef AFNetworkingUseBlockToNotifyDownloadProgress
+- (void)startObserveDownloadProgressForTask:(NSURLSessionDownloadTask *)downloadTask item:(id<SODownloadItem>)item;
+- (void)stopObserveDownloadProgressForTask:(NSURLSessionDownloadTask *)downloadTask;
+#endif
 
 @end
 
@@ -90,7 +99,7 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
         
         self.downloaderIdentifier = identifier;
         self.completeBlock = completeBlock;
-        self.maximumActiveDownloads = 1;
+        self.maximumActiveDownloads = 3;
         self.downloaderPath = [NSTemporaryDirectory() stringByAppendingPathComponent:self.downloaderIdentifier];
         
         self.tasks = [[NSMutableDictionary alloc]init];
@@ -324,17 +333,25 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
             [strongSelf safelyStartNextTaskIfNecessary];
         });
     };
+    // 创建task
+    NSData *tempData = [self tempDataForItem:item];
+#ifdef AFNetworkingUseBlockToNotifyDownloadProgress
     void (^progressBlock)(NSProgress *downloadProgress) = ^(NSProgress *downloadProgress) {
         __strong __typeof__(weakSelf) strongSelf = weakSelf;
         [strongSelf notifyDownloadItem:item withDownloadProgress:downloadProgress.fractionCompleted];
     };
-    // 创建task
-    NSData *tempData = [self tempDataForItem:item];
     if (tempData) {
         downloadTask = [self.sessionManager downloadTaskWithResumeData:tempData progress:progressBlock destination:nil completionHandler:completeBlock];
     } else {
         downloadTask = [self.sessionManager downloadTaskWithRequest:request progress:progressBlock destination:nil completionHandler:completeBlock];
     }
+#else 
+    if (tempData) {
+        downloadTask = [self.sessionManager downloadTaskWithResumeData:tempData progress:nil destination:nil completionHandler:completeBlock];
+    } else {
+        downloadTask = [self.sessionManager downloadTaskWithRequest:request progress:nil destination:nil completionHandler:completeBlock];
+    }
+#endif
     [self startDownloadTask:downloadTask forItem:item];
     SODebugLog(@"启动下载（%li）%@", self.activeRequestCount, URLIdentifier);
 }
@@ -377,6 +394,9 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
 
 #pragma mark - 同时下载数支持
 - (void)startDownloadTask:(NSURLSessionDownloadTask *)downloadTask forItem:(id<SODownloadItem>)item {
+#ifndef AFNetworkingUseBlockToNotifyDownloadProgress
+    [self startObserveDownloadProgressForTask:downloadTask item:item];
+#endif
     self.tasks[[item.downloadURL absoluteString]] = downloadTask;
     [downloadTask resume];
     ++self.activeRequestCount;
@@ -388,6 +408,10 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
 
 - (void)safelyRemoveTaskInfoForItem:(id<SODownloadItem>)item {
     dispatch_sync(self.synchronizationQueue, ^{
+#ifndef AFNetworkingUseBlockToNotifyDownloadProgress
+        NSURLSessionDownloadTask *task = [self downloadTaskForItem:item];
+        [self stopObserveDownloadProgressForTask:task];
+#endif
         [self.tasks removeObjectForKey:[item.downloadURL absoluteString]];
     });
 }
@@ -501,6 +525,34 @@ NSString * const SODownloaderCompleteDownloadItemKey = @"SODownloadItemKey";
 @end
 
 @implementation SODownloader (DownloadNotify)
+
+#ifndef AFNetworkingUseBlockToNotifyDownloadProgress
+- (void)startObserveDownloadProgressForTask:(NSURLSessionDownloadTask *)downloadTask item:(id<SODownloadItem>)item {
+    NSProgress *downloadProgress = [self.sessionManager downloadProgressForTask:downloadTask];
+    [downloadProgress setUserInfoObject:item forKey:SODownloadProgressUserInfoObjectKey];
+    [downloadProgress addObserver:self forKeyPath:@__STRING(fractionCompleted) options:NSKeyValueObservingOptionNew context:SODownloadProgressObserveContext];
+}
+
+- (void)stopObserveDownloadProgressForTask:(NSURLSessionDownloadTask *)downloadTask {
+    NSProgress *downloadProgress = [self.sessionManager downloadProgressForTask:downloadTask];
+    SODebugLog(@"stop observe progress to %@", downloadProgress);
+    [downloadProgress removeObserver:self forKeyPath:@__STRING(fractionCompleted) context:SODownloadProgressObserveContext];
+    [downloadProgress setUserInfoObject:nil forKey:SODownloadProgressUserInfoObjectKey];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    if (context == SODownloadProgressObserveContext) {
+        double progress = [change[NSKeyValueChangeNewKey] doubleValue];
+        id<SODownloadItem> downloadItem = ((NSProgress *)object).userInfo[SODownloadProgressUserInfoObjectKey];
+        if (downloadItem) {
+            [self notifyDownloadItem:downloadItem withDownloadProgress:progress];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+#endif
 
 - (void)notifyDownloadItem:(id<SODownloadItem>)item withDownloadState:(SODownloadState)downloadState {
     if ([item respondsToSelector:@selector(setDownloadState:)]) {

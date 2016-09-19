@@ -7,7 +7,6 @@
 //
 
 #import "SODownloadItem.h"
-@protocol SODownloadItem;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -78,5 +77,19 @@ typedef void(^SODownloadCompleteBlock_t)(id<SODownloadItem> item, NSURL *locatio
 FOUNDATION_EXPORT NSString * const SODownloaderCompleteItemNotification;
 /// 在SODownloaderCompleteItemNotification通知中，可以通过此key在userInfo字典中拿到下载完成的item对象。
 FOUNDATION_EXPORT NSString * const SODownloaderCompleteDownloadItemKey;
+
+// 版本适配：在此声明，建议尽可能使用较新版本的AFNetworking来进行网络请求，如果你的项目中没有过多的使用基于NSURLConnection的代码，建议都升级到AFNetworking 3.x的版本。为保证代码简洁，SODownloader不会贪多支持多个AFNetworking的版本（理论上讲，SODownloader可以支持AFNetworking 2.x ~ 3.x，见下面的注释）。
+/**
+ 版本适配是个坑，不同版本的AFNetworking，API有所差异，幸好涉及到的地方不多。
+ AFNetworking 对下载进度的反馈使用了两种方式，此处描述如下：
+ 1. 在比较旧的版本中，在2.x中，AFNetworking允许用户传入一个"NSProgress **"来获取下载进度对象。SODownloader默认选择方式2进行处理，如果用户使用的AFNetworking 2.x的版本，注释下面的AFNetworkingUseBlockToNotifyDownloadProgress即可。
+ 2. 在3.0.0（准确点是从3.0.0的第三个beta版开始的），中使用block通知进度的改变，这个block的参数是NSProgress *对象，用户可在block中做自己想做任何事。
+ */
+
+#define AFNetworkingVersion 2
+
+#if AFNetworkingVersion > 2
+#define AFNetworkingUseBlockToNotifyDownloadProgress
+#endif
 
 NS_ASSUME_NONNULL_END

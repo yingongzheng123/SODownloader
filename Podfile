@@ -4,6 +4,6 @@
 # use_frameworks!
 
 target 'SODownloadExample' do
-pod 'AFNetworking', '~> 3.1.0'
+pod 'AFNetworking', '~> 2.5'
 end
 

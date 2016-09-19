@@ -28,7 +28,7 @@
         <!--下载测试-->
         <scene sceneID="pzU-xv-IPb">
             <objects>
-                <viewController id="wYm-dB-D4T" sceneMemberID="viewController">
+                <viewController id="wYm-dB-D4T" customClass="ViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="imR-Fb-yiS"/>
                         <viewControllerLayoutGuide type="bottom" id="Fwd-fy-cJH"/>
@@ -55,6 +55,13 @@
                                 <state key="normal" title="已下载"/>
                                 <connections>
                                     <segue destination="e7s-PA-T0o" kind="show" id="ToO-hv-UJn"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="56p-te-EmF">
+                                <rect key="frame" x="123" y="331" width="129" height="30"/>
+                                <state key="normal" title="注销"/>
+                                <connections>
+                                    <action selector="destoryDownloader:" destination="wYm-dB-D4T" eventType="touchUpInside" id="7Sw-Md-52x"/>
                                 </connections>
                             </button>
                         </subviews>
