@@ -19,6 +19,11 @@ NS_ASSUME_NONNULL_BEGIN
 typedef void(^SODownloadCompleteBlock_t)(id<SODownloadItem> item, NSURL *location);
 
 /**
+ 用于从SODownloader的下载列表和已完成列表中筛选下载项。
+ */
+typedef BOOL(^SODownloadFilter_t)(id<SODownloadItem> item);
+
+/**
  @interface SODownloader
  下载工具类，基于AFURLSessionManager。
  */
@@ -46,7 +51,7 @@ typedef void(^SODownloadCompleteBlock_t)(id<SODownloadItem> item, NSURL *locatio
  @param identifier 要获取的downloader的标识符，这个标识符还将被用于downloader临时文件路径名和urlSession的identifier。
  @param completeBlock 完成回调，downloader每完成一个item时会调用此block，此block在非主线程中被调用，如果在block中进行UI操作，需要注意切换到主线程执行。另外也需要注意Block的循环引用问题。
  */
-+ (instancetype)downloaderWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock;
++ (instancetype)downloaderWithIdentifier:(NSString *)identifier completeBlock:(nullable SODownloadCompleteBlock_t)completeBlock;
 
 #pragma mark - 下载管理
 /// 加入下载
@@ -67,6 +72,14 @@ typedef void(^SODownloadCompleteBlock_t)(id<SODownloadItem> item, NSURL *locatio
 
 /// 删除所有已下载
 - (void)removeAllCompletedItems;
+/// 将一些下载项标记为已下载
+- (void)markItemsAsComplate:(NSArray<SODownloadItem>*)items;
+
+/**
+ 对象置换：
+ 在应用中同一条数据可能会有多份对象(比如已完成列表中已有一个代表同一项目的对象，然后在某一列表界面从网络获取到一个文件列表)，这时可能会需要获取SODownloader中的那个具备正确下载状态的对象。
+ */
+- (id<SODownloadItem>)filterItemUsingFilter:(SODownloadFilter_t)filter;
 
 #pragma mark - 后台下载支持
 - (void)setDidFinishEventsForBackgroundURLSessionBlock:(void (^)(NSURLSession *session))block;

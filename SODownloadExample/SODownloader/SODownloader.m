@@ -230,9 +230,7 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
     switch (state) {
         case SODownloadStateNormal:
         {
-            if ([self.downloadArray containsObject:item]) {
-                [self cancelItem:item];
-            }
+            [self _markItemAsComplate:item];
         }
             break;
         case SODownloadStateWait:
@@ -260,8 +258,11 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
             if ([self.downloadArray containsObject:item]) {
                 [self cancelItem:item];
             }
-            [self notifyDownloadItem:item withDownloadState:SODownloadStateComplete];
-            [self.completeArray addObject:item];
+            if (![self.completeArray containsObject:item]) {
+                [self notifyDownloadItem:item withDownloadProgress:1];
+                [self notifyDownloadItem:item withDownloadState:SODownloadStateComplete];
+                [self.completeArray addObject:item];
+            }
         }
             break;
         case SODownloadStateError:
@@ -287,9 +288,47 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
     });
 }
 
+- (void)markItemsAsComplate:(NSArray<SODownloadItem> *)items {
+    for (id<SODownloadItem> item in items) {
+        [self _markItemAsComplate:item];
+    }
+}
+
+- (void)_markItemAsComplate:(id<SODownloadItem>)item {
+    if ([self.downloadArray containsObject:item]) {
+        [self cancelItem:item];
+    } else if ([self.completeArray containsObject:item]) {
+        dispatch_sync(self.synchronizationQueue, ^{
+            [self.completeArray removeObject:item];
+        });
+        [self notifyDownloadItem:item withDownloadProgress:0];
+        [self notifyDownloadItem:item withDownloadState:SODownloadStateNormal];
+    }
+}
+
 /// 判断item是否在当前的downloader的控制下，用于条件判断
 - (BOOL)isControlDownloadFlowForItem:(id<SODownloadItem>)item {
-    return [self.downloadArray containsObject:item];
+    return [self.downloadArray containsObject:item] || [self.completeArray containsObject:item];
+}
+
+- (id<SODownloadItem>)filterItemUsingFilter:(SODownloadFilter_t)filter {
+    if (!filter) { return nil; }
+    __block id<SODownloadItem> item = nil;
+    [self.downloadArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (filter(obj)) {
+            item = obj;
+            *stop = YES;
+        }
+    }];
+    if (item == nil) {
+        [self.completeArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (filter(obj)) {
+                item = obj;
+                *stop = YES;
+            }
+        }];
+    }
+    return item;
 }
 
 #pragma mark - 下载处理
@@ -574,5 +613,7 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
         SOWarnLog(@"下载模型必须实现setDownloadProgress:才能获取到正确的下载进度！");
     }
 }
+
+
 
 @end

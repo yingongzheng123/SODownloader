@@ -19,7 +19,7 @@
 
  如果选择实现SODownloadItem协议而不继承SODownloadItem类时，必须同时为downloadProgress、downloadState属性合成setter、getter方法（自动或手动合成）
  
- 更进一步：为了能达到最佳效果，建议可下载模型实现下面的方法：
+ 更进一步：为了能达到最佳效果，建议可下载模型实现下面的方法，（如果没有实现这两个方法，当有多个item代表相同的资源时，这多个item都可以添加到下载列表中，实现这两个方法后可以避免出现这种情况）：
  - (NSUInteger)hash
  - (BOOL)isEqual:(id)object
  */
