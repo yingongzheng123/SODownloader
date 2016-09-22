@@ -119,6 +119,10 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 #pragma mark - Public APIs - Download Control
 /// 下载
 - (void)downloadItem:(id<SODownloadItem>)item {
+    [self downloadItem:item autoStartDownload:YES];
+}
+
+- (void)downloadItem:(id<SODownloadItem>)item autoStartDownload:(BOOL)autoStartDownload {
     if ([self isControlDownloadFlowForItem:item]) {
         SOWarnLog(@"SODownloader: %@ already in download flow!", item);
         return;
@@ -127,13 +131,16 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
         SOWarnLog(@"SODownloader only download item in normal state: %@", item);
         return;
     }
+    
     dispatch_sync(self.synchronizationQueue, ^{
-        if (item.downloadState == SODownloadStateNormal) {
-            [self.downloadArray addObject:item];
+        [self.downloadArray addObject:item];
+        if (autoStartDownload) {
             [self notifyDownloadItem:item withDownloadState:SODownloadStateWait];
-            if ([self isActiveRequestCountBelowMaximumLimit]) {
+            if ([self isActiveRequestCountBelowMaximumLimit] && autoStartDownload) {
                 [self startDownloadItem:item];
             }
+        } else {
+            [self notifyDownloadItem:item withDownloadState:SODownloadStatePaused];
         }
     });
 }
@@ -230,51 +237,50 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
     switch (state) {
         case SODownloadStateNormal:
         {
-            [self _markItemAsComplate:item];
-        }
-            break;
-        case SODownloadStateWait:
-        {
-            if (item.downloadState == SODownloadStateNormal) {
-                [self downloadItem:item];
-            } else if (item.downloadState == SODownloadStateError) {
-                [self notifyDownloadItem:item withDownloadState:SODownloadStateWait];
-                [self safelyStartNextTaskIfNecessary];
+            if ([self.completeArray containsObject:item]) {
+                dispatch_sync(self.synchronizationQueue, ^{
+                    [self.completeArray removeObject:item];
+                    [self notifyDownloadItem:item withDownloadState:SODownloadStateNormal];
+                    [self notifyDownloadItem:item withDownloadProgress:0];
+                });
+            } else if ([self.downloadArray containsObject:item]) {
+                [self cancelItem:item];
             }
         }
             break;
+        case SODownloadStateWait:
         case SODownloadStateLoading:
         {
-            [self resumeItem:item];
+            if (![self isControlDownloadFlowForItem:item]) {
+                [self downloadItem:item];
+            } else {
+                [self resumeItem:item];
+            }
         }
             break;
         case SODownloadStatePaused:
         {
-            [self pauseItem:item];
+            if ([self isControlDownloadFlowForItem:item]) {
+                [self pauseItem:item];
+            } else {
+                [self downloadItem:item autoStartDownload:NO];
+            }
         }
             break;
         case SODownloadStateComplete:
         {
-            if ([self.downloadArray containsObject:item]) {
-                [self cancelItem:item];
-            }
-            if (![self.completeArray containsObject:item]) {
-                [self notifyDownloadItem:item withDownloadProgress:1];
-                [self notifyDownloadItem:item withDownloadState:SODownloadStateComplete];
-                [self.completeArray addObject:item];
-            }
+            [self _markItemAsComplate:item];
         }
             break;
         case SODownloadStateError:
-            if ([self.downloadArray containsObject:item]) {
-                if (item.downloadState == SODownloadStateComplete) {
-                    [self notifyDownloadItem:item withDownloadState:SODownloadStateError];
-                    [self notifyDownloadItem:item withDownloadProgress:0];
-                }
+        {
+            if ([self.completeArray containsObject:item] && item.downloadState == SODownloadStateComplete) {
+                [self notifyDownloadItem:item withDownloadState:SODownloadStateError];
+                [self notifyDownloadItem:item withDownloadProgress:0];
             }
+        }
             break;
-        default:
-            break;
+        default:break;
     }
 }
 
@@ -538,6 +544,7 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 }
 
 - (void)saveResumeData:(NSData *)resumeData forItem:(id<SODownloadItem>)item {
+    SODebugLog(@"保存暂停信息：%@", [self tempPathForItem:item]);
     [resumeData writeToFile:[self tempPathForItem:item] atomically:YES];
 }
 
@@ -613,7 +620,5 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
         SOWarnLog(@"下载模型必须实现setDownloadProgress:才能获取到正确的下载进度！");
     }
 }
-
-
 
 @end

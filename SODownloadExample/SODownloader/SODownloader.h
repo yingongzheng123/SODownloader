@@ -54,9 +54,12 @@ typedef BOOL(^SODownloadFilter_t)(id<SODownloadItem> item);
 + (instancetype)downloaderWithIdentifier:(NSString *)identifier completeBlock:(nullable SODownloadCompleteBlock_t)completeBlock;
 
 #pragma mark - 下载管理
-/// 加入下载
+/// 加入下载并自动开始
 - (void)downloadItem:(id<SODownloadItem>)item;
+/// 加入下载，如果autoStartDownload参数为YES，自动开始，如果为NO，该item被置为暂停状态。
+- (void)downloadItem:(id<SODownloadItem>)item autoStartDownload:(BOOL)autoStartDownload;
 - (void)downloadItems:(NSArray<SODownloadItem>*)items;
+
 /// 暂停
 - (void)pauseItem:(id<SODownloadItem>)item;
 - (void)pauseAll;
@@ -67,7 +70,16 @@ typedef BOOL(^SODownloadFilter_t)(id<SODownloadItem> item);
 - (void)cancelItem:(id<SODownloadItem>)item;
 - (void)cancenAll;
 
-// 状态管理
+/**
+ 有时候，写注释的时候就觉得自己有语言困难症。
+ 这个方法提供一点调整下载项下载状态的功能，但不要滥用，能用前面几个方法解决的问题就别用这个方法。
+ 使用这个方法可以解决如下问题：
+ 1. 告诉SODownloader某个item以前已经下载完了（state传SODownloadStateComplete）。
+ 2. 告诉SODownloader某个已下载的item是错误的，比如下载的文件无法使用，通过state传SODownloadStateError改让SODownloader知晓。
+ 3. 将item加入下载队列，但将其状态设置为SODownloadStatePaused，这样，不会立即下载。
+ 
+ 再次声明：对非上述说明的情况调用此方法不保证逻辑正确性。
+ */
 - (void)setDownloadState:(SODownloadState)state forItem:(id<SODownloadItem>)item;
 
 /// 删除所有已下载
