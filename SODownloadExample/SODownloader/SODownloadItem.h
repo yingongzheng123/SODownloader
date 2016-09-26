@@ -44,8 +44,8 @@ typedef NS_ENUM(NSUInteger, SODownloadState) {
 
 @protocol SODownloadItem <NSObject>
 
-@property (assign, nonatomic) double downloadProgress;
-@property (assign, nonatomic) SODownloadState downloadState;
+@property (assign, nonatomic) double so_downloadProgress;
+@property (assign, nonatomic) SODownloadState so_downloadState;
 - (NSURL *)downloadURL;
 
 @end

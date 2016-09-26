@@ -16,7 +16,7 @@
 @end
 
 @implementation SOMusic
-@synthesize downloadProgress, downloadState;
+@synthesize so_downloadProgress, so_downloadState;
 
 + (NSArray *)allMusicList {
     static NSArray *array = nil;

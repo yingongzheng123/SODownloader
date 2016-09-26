@@ -10,7 +10,7 @@
 #import "SOLog.h"
 
 @implementation SODownloadItem
-@synthesize downloadProgress, downloadState;
+@synthesize so_downloadState, so_downloadProgress;
 
 - (NSURL *)downloadURL {
     SOWarnLog(@"[SODownloader]:Your download item class must implements -(NSURL *)downloadURL method declare in protocol SODownloadItem");

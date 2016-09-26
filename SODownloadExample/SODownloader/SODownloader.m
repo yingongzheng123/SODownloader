@@ -108,7 +108,7 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
         SOWarnLog(@"SODownloader: %@ already in download flow!", item);
         return;
     }
-    if (item.downloadState != SODownloadStateNormal) {
+    if (item.so_downloadState != SODownloadStateNormal) {
         SOWarnLog(@"SODownloader only download item in normal state: %@", item);
         return;
     }
@@ -132,6 +132,12 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
     }
 }
 
+- (void)downloadItems:(NSArray<SODownloadItem> *)items autoStartDownload:(BOOL)autoStartDownload {
+    for (id<SODownloadItem>item in items) {
+        [self downloadItem:item autoStartDownload:autoStartDownload];
+    }
+}
+
 /// 暂停
 - (void)pauseItem:(id<SODownloadItem>)item {
     if (![self isControlDownloadFlowForItem:item]) {
@@ -139,8 +145,8 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
         return;
     }
     dispatch_sync(self.synchronizationQueue, ^{
-        if (item.downloadState == SODownloadStateLoading || item.downloadState == SODownloadStateWait) {
-            if (item.downloadState == SODownloadStateLoading) {
+        if (item.so_downloadState == SODownloadStateLoading || item.so_downloadState == SODownloadStateWait) {
+            if (item.so_downloadState == SODownloadStateLoading) {
                 NSURLSessionDownloadTask *downloadTask = [self downloadTaskForItem:item];
                 [downloadTask cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
                     [self saveResumeData:resumeData forItem:item];
@@ -165,7 +171,7 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
         return;
     }
     dispatch_sync(self.synchronizationQueue, ^{
-        if (item.downloadState == SODownloadStatePaused || item.downloadState == SODownloadStateError) {
+        if (item.so_downloadState == SODownloadStatePaused || item.so_downloadState == SODownloadStateError) {
             if ([self isActiveRequestCountBelowMaximumLimit]) {
                 [self startDownloadItem:item];
             } else {
@@ -192,8 +198,8 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 
 - (void)_cancelItem:(id<SODownloadItem>)item isAllCancelled:(BOOL)isAllCancelled {
     dispatch_sync(self.synchronizationQueue, ^{
-        if (item.downloadState == SODownloadStateLoading || item.downloadState == SODownloadStateWait) {
-            if (item.downloadState == SODownloadStateLoading) {
+        if (item.so_downloadState == SODownloadStateLoading || item.so_downloadState == SODownloadStateWait) {
+            if (item.so_downloadState == SODownloadStateLoading) {
                 NSURLSessionDownloadTask *downloadTask = [self downloadTaskForItem:item];
                 [downloadTask cancel];
             }
@@ -255,7 +261,7 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
             break;
         case SODownloadStateError:
         {
-            if ([self.completeArray containsObject:item] && item.downloadState == SODownloadStateComplete) {
+            if ([self.completeArray containsObject:item] && item.so_downloadState == SODownloadStateComplete) {
                 [self notifyDownloadItem:item withDownloadState:SODownloadStateError];
                 [self notifyDownloadItem:item withDownloadProgress:0];
             }
@@ -284,12 +290,13 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 - (void)_markItemAsComplate:(id<SODownloadItem>)item {
     if ([self.downloadArray containsObject:item]) {
         [self cancelItem:item];
-    } else if ([self.completeArray containsObject:item]) {
+    }
+    if (![self.completeArray containsObject:item]) {
         dispatch_sync(self.synchronizationQueue, ^{
-            [self.completeArray removeObject:item];
+            [self.completeArray addObject:item];
+            [self notifyDownloadItem:item withDownloadProgress:1];
+            [self notifyDownloadItem:item withDownloadState:SODownloadStateComplete];
         });
-        [self notifyDownloadItem:item withDownloadProgress:0];
-        [self notifyDownloadItem:item withDownloadState:SODownloadStateNormal];
     }
 }
 
@@ -460,7 +467,7 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 - (void)startNextTaskIfNecessary {
     [self log4ActiveCountByTag:@"开始下一个"];
     for (id<SODownloadItem>item in self.downloadArray) {
-        if (item.downloadState == SODownloadStateWait && [self isActiveRequestCountBelowMaximumLimit]) {
+        if (item.so_downloadState == SODownloadStateWait && [self isActiveRequestCountBelowMaximumLimit]) {
             [self startDownloadItem:item];
             if (![self isActiveRequestCountBelowMaximumLimit]) {
                 break;
@@ -582,9 +589,9 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 #endif
 
 - (void)notifyDownloadItem:(id<SODownloadItem>)item withDownloadState:(SODownloadState)downloadState {
-    if ([item respondsToSelector:@selector(setDownloadState:)]) {
+    if ([item respondsToSelector:@selector(setSo_downloadState:)]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            item.downloadState = downloadState;
+            item.so_downloadState = downloadState;
         });
     } else {
         SOWarnLog(@"下载模型必须实现setDownloadState:才能获取到正确的下载状态！");
@@ -593,9 +600,9 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 
 - (void)notifyDownloadItem:(id<SODownloadItem>)item withDownloadProgress:(double)downloadProgress {
     SODebugLog(@"%@ %.2f", item, downloadProgress);
-    if ([item respondsToSelector:@selector(setDownloadProgress:)]) {
+    if ([item respondsToSelector:@selector(setSo_downloadProgress:)]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            item.downloadProgress = downloadProgress;
+            item.so_downloadProgress = downloadProgress;
         });
     } else {
         SOWarnLog(@"下载模型必须实现setDownloadProgress:才能获取到正确的下载进度！");

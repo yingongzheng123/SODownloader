@@ -54,7 +54,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     SOMusic *music = self.musicArray[indexPath.row];
-    switch (music.downloadState) {
+    switch (music.so_downloadState) {
         case SODownloadStateError:
         {
             [[SODownloader musicDownloader]resumeItem:music];

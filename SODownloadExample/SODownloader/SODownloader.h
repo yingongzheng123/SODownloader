@@ -59,6 +59,7 @@ typedef BOOL(^SODownloadFilter_t)(id<SODownloadItem> item);
 /// 加入下载，如果autoStartDownload参数为YES，自动开始，如果为NO，该item被置为暂停状态。
 - (void)downloadItem:(id<SODownloadItem>)item autoStartDownload:(BOOL)autoStartDownload;
 - (void)downloadItems:(NSArray<SODownloadItem>*)items;
+- (void)downloadItems:(NSArray<SODownloadItem> *)items autoStartDownload:(BOOL)autoStartDownload;
 
 /// 暂停
 - (void)pauseItem:(id<SODownloadItem>)item;
