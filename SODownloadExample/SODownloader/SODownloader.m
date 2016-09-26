@@ -66,24 +66,6 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 
 @implementation SODownloader
 
-+ (NSMutableDictionary *)downloaderCache {
-    static NSMutableDictionary *downloaderCache = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        downloaderCache = [[NSMutableDictionary alloc]init];
-    });
-    return downloaderCache;
-}
-
-+ (instancetype)downloaderWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock {
-    SODownloader *downloader = [[self downloaderCache]objectForKey:identifier];
-    if (!downloader) {
-        downloader = [[[self class]alloc]initWithIdentifier:identifier completeBlock:completeBlock];
-        [[self downloaderCache]setObject:downloader forKey:identifier];
-    }
-    return downloader;
-}
-
 - (instancetype)initWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock {
     self = [super init];
     if (self) {
@@ -111,9 +93,8 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
     return self;
 }
 
-- (void)dealloc
-{
-    SODebugLog(@"dealloc");
+- (void)dealloc {
+    SODebugLog(@"SODownloader dealloc");
 }
 
 #pragma mark - Public APIs - Download Control

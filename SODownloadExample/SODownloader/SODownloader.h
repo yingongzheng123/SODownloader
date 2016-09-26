@@ -46,12 +46,12 @@ typedef BOOL(^SODownloadFilter_t)(id<SODownloadItem> item);
 
 #pragma mark - 创建/初始化
 /**
- 如果identifier对应的downloader已存在，则返回其对应的downloader，否则为该identifier创建一个downloader。
+ 为该identifier创建一个downloader。
  @return identifier对应的downloader
  @param identifier 要获取的downloader的标识符，这个标识符还将被用于downloader临时文件路径名和urlSession的identifier。
  @param completeBlock 完成回调，downloader每完成一个item时会调用此block，此block在非主线程中被调用，如果在block中进行UI操作，需要注意切换到主线程执行。另外也需要注意Block的循环引用问题。
  */
-+ (instancetype)downloaderWithIdentifier:(NSString *)identifier completeBlock:(nullable SODownloadCompleteBlock_t)completeBlock;
+- (instancetype)initWithIdentifier:(NSString *)identifier completeBlock:(SODownloadCompleteBlock_t)completeBlock;
 
 #pragma mark - 下载管理
 /// 加入下载并自动开始
