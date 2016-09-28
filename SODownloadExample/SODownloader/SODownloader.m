@@ -414,6 +414,14 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
             default:
                 break;
         }
+    } else if ([error.domain isEqualToString:AFURLResponseSerializationErrorDomain]) {
+        switch (error.code) {
+            case NSURLErrorBadServerResponse:
+                
+                break;
+            default:
+                break;
+        }
     }
     if (!handledError) {
         // 如果有临时文件，保存文件

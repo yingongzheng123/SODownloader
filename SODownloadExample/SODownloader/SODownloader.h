@@ -37,6 +37,7 @@ typedef BOOL(^SODownloadFilter_t)(id<SODownloadItem> item);
 @property (nonatomic, strong, readonly) NSMutableArray *downloadArray;
 /// 已下载项数组
 @property (nonatomic, strong, readonly) NSMutableArray *completeArray;
+
 /**
  下载文件接受类型
  此属性默认为nil，可接收任意类型的文件。
@@ -93,6 +94,12 @@ typedef BOOL(^SODownloadFilter_t)(id<SODownloadItem> item);
  在应用中同一条数据可能会有多份对象(比如已完成列表中已有一个代表同一项目的对象，然后在某一列表界面从网络获取到一个文件列表)，这时可能会需要获取SODownloader中的那个具备正确下载状态的对象。
  */
 - (id<SODownloadItem>)filterItemUsingFilter:(SODownloadFilter_t)filter;
+
+/**
+ 错误处理。
+ 由于下载这项功能的特殊性，如果下载失败，解救的手段有限。在一些情况下，可以尝试重新下载。但对于另一些情况如远程资源不存在（状态404），或下载完后无法解析，再次尝试重新下载也还是会得到相同的结果。
+ */
+@property (nonatomic, assign) BOOL autoCancelFailedDownload;
 
 #pragma mark - 后台下载支持
 - (void)setDidFinishEventsForBackgroundURLSessionBlock:(void (^)(NSURLSession *session))block;
