@@ -359,7 +359,7 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
                 [strongSelf notifyDownloadItem:item withDownloadState:SODownloadStateComplete];
                 [strongSelf.downloadArray removeObject:item];
                 [strongSelf.completeArray addObject:item];
-                strongSelf.completeBlock ?: strongSelf.completeBlock(item, filePath);
+                !strongSelf.completeBlock ?: strongSelf.completeBlock(item, filePath);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter]postNotificationName:SODownloaderCompleteItemNotification object:strongSelf userInfo:@{SODownloaderCompleteDownloadItemKey: item}];
                 });
@@ -369,6 +369,9 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
             [strongSelf safelyStartNextTaskIfNecessary];
         });
     };
+    NSURL *(^destinationBlock)(NSURL *targetPath, NSURLResponse *response) = ^(NSURL *targetPath, NSURLResponse *response) {
+        return targetPath;
+    };
     // 创建task
     NSData *tempData = [self tempDataForItem:item];
 #ifdef AFNetworkingUseBlockToNotifyDownloadProgress
@@ -377,15 +380,15 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
         [strongSelf notifyDownloadItem:item withDownloadProgress:downloadProgress.fractionCompleted];
     };
     if (tempData) {
-        downloadTask = [self.sessionManager downloadTaskWithResumeData:tempData progress:progressBlock destination:nil completionHandler:completeBlock];
+        downloadTask = [self.sessionManager downloadTaskWithResumeData:tempData progress:progressBlock destination:destinationBlock completionHandler:completeBlock];
     } else {
-        downloadTask = [self.sessionManager downloadTaskWithRequest:request progress:progressBlock destination:nil completionHandler:completeBlock];
+        downloadTask = [self.sessionManager downloadTaskWithRequest:request progress:progressBlock destination:destinationBlock completionHandler:completeBlock];
     }
 #else 
     if (tempData) {
-        downloadTask = [self.sessionManager downloadTaskWithResumeData:tempData progress:nil destination:nil completionHandler:completeBlock];
+        downloadTask = [self.sessionManager downloadTaskWithResumeData:tempData progress:nil destination:destinationBlock completionHandler:completeBlock];
     } else {
-        downloadTask = [self.sessionManager downloadTaskWithRequest:request progress:nil destination:nil completionHandler:completeBlock];
+        downloadTask = [self.sessionManager downloadTaskWithRequest:request progress:nil destination:destinationBlock completionHandler:completeBlock];
     }
 #endif
     [self startDownloadTask:downloadTask forItem:item];
