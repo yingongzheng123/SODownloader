@@ -72,6 +72,9 @@ typedef BOOL(^SODownloadFilter_t)(id<SODownloadItem> item);
 - (void)cancelItem:(id<SODownloadItem>)item;
 - (void)cancenAll;
 
+/// 判断该item是否在当前的downloader对象的下载列表或完成列表中
+- (BOOL)isControlDownloadFlowForItem:(id<SODownloadItem>)item;
+
 /**
  有时候，写注释的时候就觉得自己有语言困难症。
  这个方法提供一点调整下载项下载状态的功能，但不要滥用，能用前面几个方法解决的问题就别用这个方法。
@@ -110,7 +113,12 @@ typedef BOOL(^SODownloadFilter_t)(id<SODownloadItem> item);
 
 @end
 
-/// SODownloader每完成下载一个item时，会发送此通知。这个通知的object为downloader对象，userInfo中包含了item对象。
+/**
+ 1. SODownloader每完成下载一个item时，会发送此通知。这个通知的object为downloader对象，userInfo中包含了item对象。
+ 2. 当autoCancelFailedItem为YES时，SODownloader从下载列表中忽略一个下载失败的项时也会发送此通知。
+ 综合上述情况，每当有下载项从下载列表移除时，发送此通知。
+ */
+
 FOUNDATION_EXPORT NSString * const SODownloaderCompleteItemNotification;
 /// 在SODownloaderCompleteItemNotification通知中，可以通过此key在userInfo字典中拿到下载完成的item对象。
 FOUNDATION_EXPORT NSString * const SODownloaderCompleteDownloadItemKey;

@@ -40,8 +40,6 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 // complete block
 @property (nonatomic, copy) SODownloadCompleteBlock_t completeBlock;
 
-- (BOOL)isControlDownloadFlowForItem:(id<SODownloadItem>)item;
-
 @end
 
 @interface SODownloader (DownloadPath)
@@ -340,6 +338,11 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
     if (!request) {
         NSError *URLError = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
         SOErrorLog(@"SODownload fail %@", URLError);
+        if ([item respondsToSelector:@selector(setSo_downloadError:)]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [item setSo_downloadError:URLError];
+            });
+        }
         [self notifyDownloadItem:item withDownloadState:SODownloadStateError];
         [self startNextTaskIfNecessary];
         return;
@@ -418,6 +421,9 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
     if (!handledError) {
         if (self.autoCancelFailedItem) {
             [self cancelItem:item];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter]postNotificationName:SODownloaderCompleteItemNotification object:self userInfo:@{SODownloaderCompleteDownloadItemKey: item}];
+            });
         } else {
             // 如果有临时文件，保存文件
             NSData *resumeData = error.userInfo[NSURLSessionDownloadTaskResumeData];
