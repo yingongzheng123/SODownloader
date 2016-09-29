@@ -65,7 +65,7 @@ typedef BOOL(^SODownloadFilter_t)(id<SODownloadItem> item);
 /// 暂停
 - (void)pauseItem:(id<SODownloadItem>)item;
 - (void)pauseAll;
-/// 继续
+/// 继续 已暂停或失败状态的下载项
 - (void)resumeItem:(id<SODownloadItem>)item;
 - (void)resumeAll;
 /// 取消／删除
@@ -97,9 +97,13 @@ typedef BOOL(^SODownloadFilter_t)(id<SODownloadItem> item);
 
 /**
  错误处理。
- 由于下载这项功能的特殊性，如果下载失败，解救的手段有限。在一些情况下，可以尝试重新下载。但对于另一些情况如远程资源不存在（状态404），或下载完后无法解析，再次尝试重新下载也还是会得到相同的结果。
+ 由于下载这项功能的特殊性，如果下载失败，解救的手段有限。SODownloader将下载失败的情况分为两类：
+ 1. 可以重新下载。对于这种情况，SODownloader会自动重新下载该下载项。
+ 2. 无法重新下载。例如远程资源根本不存在，重新下载也是白忙。
+ 3. 其他错误也可以归类到1或2中，如遇到可以继续下载的其他错误，可以在 https://github.com/scfhao/SODownloader/issues 提出。
+ 将autoCancelFailedItem 属性置为YES时（默认为NO），当一个下载项下载失败且SODownloader无法处理时，自动取消下载该下载项，下载项的下载状态将被置为Normal；默认情况下（此属性为NO时），下载状态被置为Error，下载项的so_downloadError属性将被赋值。
  */
-@property (nonatomic, assign) BOOL autoCancelFailedDownload;
+@property (nonatomic, assign) BOOL autoCancelFailedItem;
 
 #pragma mark - 后台下载支持
 - (void)setDidFinishEventsForBackgroundURLSessionBlock:(void (^)(NSURLSession *session))block;

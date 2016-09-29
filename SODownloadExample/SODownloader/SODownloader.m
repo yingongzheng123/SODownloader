@@ -414,22 +414,23 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
             default:
                 break;
         }
-    } else if ([error.domain isEqualToString:AFURLResponseSerializationErrorDomain]) {
-        switch (error.code) {
-            case NSURLErrorBadServerResponse:
-                
-                break;
-            default:
-                break;
-        }
     }
     if (!handledError) {
-        // 如果有临时文件，保存文件
-        NSData *resumeData = error.userInfo[NSURLSessionDownloadTaskResumeData];
-        if (resumeData) {
-            [self saveResumeData:resumeData forItem:item];
+        if (self.autoCancelFailedItem) {
+            [self cancelItem:item];
+        } else {
+            // 如果有临时文件，保存文件
+            NSData *resumeData = error.userInfo[NSURLSessionDownloadTaskResumeData];
+            if (resumeData) {
+                [self saveResumeData:resumeData forItem:item];
+            }
+            if ([item respondsToSelector:@selector(setSo_downloadError:)]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [item setSo_downloadError:error];
+                });
+            }
+            [self notifyDownloadItem:item withDownloadState:SODownloadStateError];
         }
-        [self notifyDownloadItem:item withDownloadState:SODownloadStateError];
     }
 }
 

@@ -42,10 +42,20 @@ typedef NS_ENUM(NSUInteger, SODownloadState) {
     SODownloadStateError,
 };
 
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol SODownloadItem <NSObject>
 
+@optional
+/// 保存下载进度，支持KVO
 @property (assign, nonatomic) double so_downloadProgress;
+/// 保存下载状态，支持KVO，该属性的值应由SODownloader指定，若有修改需求时，请使用SODownloader的-setDownloadState:forItem:方法。
 @property (assign, nonatomic) SODownloadState so_downloadState;
+/// 当下载失败时，此属性保存失败错误对象
+@property (strong, nonatomic, null_resettable) NSError *so_downloadError;
+
+@required
+/// 返回下载项对应的下载地址
 - (NSURL *)downloadURL;
 
 @end
@@ -53,3 +63,5 @@ typedef NS_ENUM(NSUInteger, SODownloadState) {
 @interface SODownloadItem : NSObject<SODownloadItem>
 
 @end
+
+NS_ASSUME_NONNULL_END
