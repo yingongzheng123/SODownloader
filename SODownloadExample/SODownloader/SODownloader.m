@@ -370,7 +370,9 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
         });
     };
     NSURL *(^destinationBlock)(NSURL *targetPath, NSURLResponse *response) = ^(NSURL *targetPath, NSURLResponse *response) {
-        return targetPath;
+        NSString *fileName = [targetPath lastPathComponent];
+        NSString *destinationPath = [NSTemporaryDirectory() stringByAppendingPathComponent:fileName];
+        return [NSURL fileURLWithPath:destinationPath];
     };
     // 创建task
     NSData *tempData = [self tempDataForItem:item];
