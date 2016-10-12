@@ -26,6 +26,7 @@ typedef BOOL(^SODownloadFilter_t)(id<SODownloadItem> item);
 /**
  @interface SODownloader
  下载工具类，基于AFURLSessionManager。
+ 用于下载模型化对象（SODownloadItem），对于其他下载需求，建议直接使用AFNetworking进行下载。
  */
 @interface SODownloader : NSObject
 

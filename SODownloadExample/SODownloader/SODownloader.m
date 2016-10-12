@@ -1,6 +1,6 @@
 //
 //  SODownloader.m
-//  SOMoviePlayerDemo
+//  SODownloadExample
 //
 //  Created by scfhao on 16/6/17.
 //  Copyright © 2016年 Phoenix E-Learning. All rights reserved.
