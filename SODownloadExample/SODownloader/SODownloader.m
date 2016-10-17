@@ -73,7 +73,13 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
         queueLabel = [NSString stringWithFormat:@"cn.scfhao.downloader.responseQueue-%@", [NSUUID UUID].UUIDString];
         self.responseQueue = dispatch_queue_create([queueLabel UTF8String], DISPATCH_QUEUE_CONCURRENT);
         
-        NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:identifier];
+        NSURLSessionConfiguration *sessionConfiguration;
+        if ([[[UIDevice currentDevice]systemVersion]floatValue] >= 8.0) {
+            sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:identifier];
+        } else {
+            sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfiguration:identifier];
+        }
+        
         self.sessionManager = [[AFHTTPSessionManager alloc]initWithSessionConfiguration:sessionConfiguration];
         self.sessionManager.responseSerializer = [SODownloadResponseSerializer serializer];
         
