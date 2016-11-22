@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @required
 /// 返回下载项对应的下载地址
-- (NSURL *)downloadURL;
+- (NSURL *)so_downloadURL;
 
 @end
 

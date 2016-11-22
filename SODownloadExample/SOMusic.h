@@ -12,8 +12,6 @@
 
 @property (copy, nonatomic) NSString *title;
 
-@property (strong, nonatomic, readonly) NSURL *downloadURL;
-
 + (NSArray <SODownloadItem>*)allMusicList;
 
 @end

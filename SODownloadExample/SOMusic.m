@@ -55,7 +55,7 @@
 
 
 #pragma mark - SODownloadItem必须实现的方法
-- (NSURL *)downloadURL {
+- (NSURL *)so_downloadURL {
     return [NSURL URLWithString:self.urlString];
 }
 

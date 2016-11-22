@@ -116,7 +116,10 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
         SOWarnLog(@"SODownloader only download item in normal state: %@", item);
         return;
     }
-    
+    if (![item respondsToSelector:@selector(so_downloadURL)] || ![item so_downloadURL]) {
+        SOErrorLog(@"SODownloader: Class<%@> must implements method so_downloadURL and return a valid URL!", NSStringFromClass([item class]));
+        return;
+    }
     dispatch_sync(self.synchronizationQueue, ^{
         [self.downloadArray addObject:item];
         if (autoStartDownload) {
@@ -333,7 +336,7 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 /// 开始下载一个item，这个方法必须在同步线程中调用，且调用前必须先判断是否可以开始新的下载
 - (void)startDownloadItem:(id<SODownloadItem>)item {
     [self notifyDownloadItem:item withDownloadState:SODownloadStateLoading];
-    NSString *URLIdentifier = [item.downloadURL absoluteString];
+    NSString *URLIdentifier = [item.so_downloadURL absoluteString];
     
     NSURLSessionDownloadTask *existingDownloadTask = self.tasks[URLIdentifier];
     if (existingDownloadTask) {
@@ -456,13 +459,13 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 #ifndef AFNetworkingUseBlockToNotifyDownloadProgress
     [self startObserveDownloadProgressForTask:downloadTask item:item];
 #endif
-    self.tasks[[item.downloadURL absoluteString]] = downloadTask;
+    self.tasks[[item.so_downloadURL absoluteString]] = downloadTask;
     [downloadTask resume];
     ++self.activeRequestCount;
 }
 
 - (NSURLSessionDownloadTask *)downloadTaskForItem:(id<SODownloadItem>)item {
-    return self.tasks[[item.downloadURL absoluteString]];
+    return self.tasks[[item.so_downloadURL absoluteString]];
 }
 
 - (void)safelyRemoveTaskInfoForItem:(id<SODownloadItem>)item {
@@ -471,7 +474,7 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
         NSURLSessionDownloadTask *task = [self downloadTaskForItem:item];
         [self stopObserveDownloadProgressForTask:task];
 #endif
-        [self.tasks removeObjectForKey:[item.downloadURL absoluteString]];
+        [self.tasks removeObjectForKey:[item.so_downloadURL absoluteString]];
     });
 }
 
@@ -548,8 +551,8 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 }
 
 - (NSString *)tempPathForItem:(id<SODownloadItem>)item {
-    NSAssert([item downloadURL] != nil, @"SODownloader needs downloadURL for download item!");
-    NSString *tempFileName = [[self pathForDownloadURL:[item downloadURL]]stringByAppendingPathExtension:@"download"];
+    NSAssert([item so_downloadURL] != nil, @"SODownloader needs downloadURL for download item!");
+    NSString *tempFileName = [[self pathForDownloadURL:[item so_downloadURL]]stringByAppendingPathExtension:@"download"];
     return [self.downloaderPath stringByAppendingPathComponent:tempFileName];
 }
 

@@ -12,7 +12,7 @@
 @implementation SODownloadItem
 @synthesize so_downloadState, so_downloadProgress;
 
-- (NSURL *)downloadURL {
+- (NSURL *)so_downloadURL {
     SOWarnLog(@"[SODownloader]:Your download item class must implements -(NSURL *)downloadURL method declare in protocol SODownloadItem");
     abort();
 }
