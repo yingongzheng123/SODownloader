@@ -13,11 +13,12 @@
 @implementation AppDelegate (SODownloader)
 
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler {
-    SODebugLog(@"%@", NSStringFromSelector(_cmd));
-    SODownloader *downloader = [SODownloader musicDownloader];
-    [downloader setDidFinishEventsForBackgroundURLSessionBlock:^(NSURLSession * _Nonnull session) {
-        completionHandler();
-    }];
+    if ([identifier isEqualToString:@"music"]) {
+        SODownloader *downloader = [SODownloader musicDownloader];
+        [downloader setDidFinishEventsForBackgroundURLSessionBlock:^(NSURLSession * _Nonnull session) {
+            completionHandler();
+        }];
+    }
 }
 
 @end
