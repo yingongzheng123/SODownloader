@@ -619,9 +619,7 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 
 - (void)notifyDownloadItem:(id<SODownloadItem>)item withDownloadState:(SODownloadState)downloadState {
     if ([item respondsToSelector:@selector(setSo_downloadState:)]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            item.so_downloadState = downloadState;
-        });
+        item.so_downloadState = downloadState;
     } else {
         SOWarnLog(@"下载模型必须实现setDownloadState:才能获取到正确的下载状态！");
     }
@@ -630,9 +628,7 @@ static NSString * const SODownloadProgressUserInfoObjectKey = @"SODownloadProgre
 - (void)notifyDownloadItem:(id<SODownloadItem>)item withDownloadProgress:(double)downloadProgress {
     SODebugLog(@"%@ %.2f", item, downloadProgress);
     if ([item respondsToSelector:@selector(setSo_downloadProgress:)]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            item.so_downloadProgress = downloadProgress;
-        });
+        item.so_downloadProgress = downloadProgress;
     } else {
         SOWarnLog(@"下载模型必须实现setDownloadProgress:才能获取到正确的下载进度！");
     }

@@ -63,10 +63,14 @@ static void * kProgressContext = &kProgressContext;
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
     if (context == kStateContext) {
         SODownloadState newState = [change[NSKeyValueChangeNewKey]integerValue];
-        [self updateState:newState];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateState:newState];
+        });
     } else if (context == kProgressContext) {
         double newProgress = [change[NSKeyValueChangeNewKey]doubleValue];
-        self.progressView.progress = newProgress;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.progressView.progress = newProgress;
+        });
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
